@@ -1,12 +1,16 @@
 :root {
     --bg-color: #ecf0f3;
-    --game-shadow: -10px 10px 10px #dbdfe2, 10px -10px 20px #fdffff;
+    --game-shadow: -10px 10px 20px #dbdfe2, 10px -10px 20px #fdffff;
     --board-shadow-inset: inset -5px 5px 8px #d4d8db, inset 5px -5px 8px #ffffff;
-    --block-size: 20px;
+    --button-shadow: -5px 5px 10px #c4c7ca, 5px -5px 10px #ffffff;
+    --button-shadow-inset: inset -5px 5px 10px #c4c7ca, inset 5px -5px 10px #ffffff;
+
+    --border-radius: 20px;
+    --block-size: 25px;
     --game-width: 414px;
     --game-height: 736px;
 
-    --border-radius: 20px;
+    --button-size: 50px;
 }
 
 * {
@@ -90,5 +94,28 @@ html {
     width: var(--block-size);
     height: var(--block-size);
     background: red;
-    border: 0.1px solid white;
+    border: 0.1px solid var(--bg-color);
+}
+
+.setting-section {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+}
+
+.setting-section button {
+    margin: 0 10px;
+}
+.btn {
+    width: var(--button-size);
+    height: var(--button-size);
+    box-shadow: var(--button-shadow);
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.btn:active {
+    box-shadow: var(--button-shadow-inset);
 }
