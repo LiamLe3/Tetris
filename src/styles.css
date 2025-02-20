@@ -2,7 +2,7 @@
     --bg-color: #ecf0f3;
     --game-shadow: -10px 10px 10px #dbdfe2, 10px -10px 20px #fdffff;
     --board-shadow-inset: inset -5px 5px 8px #d4d8db, inset 5px -5px 8px #ffffff;
-    --block-size: 25px;
+    --block-size: 20px;
     --game-width: 414px;
     --game-height: 736px;
 
@@ -21,16 +21,6 @@ html {
     height: 100vh;
     background-color: white;
     overflow:hidden;
-}
-
-table {
-
-}
-
-td {
-    background: red;
-    width: var(--block-size);
-    height: var(--block-size);
 }
 
 .container {
@@ -67,8 +57,8 @@ td {
 .next-item {
     box-shadow: var(--board-shadow-inset);
     border-radius: var(--border-radius);
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
     display:flex;
     align-items: center;
     justify-content: center;
@@ -88,8 +78,17 @@ td {
 }
 
 .board-section {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
     margin: auto;
     box-shadow: var(--board-shadow-inset);
-    border-radius: var(--border-radius);
-    padding: 15px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.block {
+    width: var(--block-size);
+    height: var(--block-size);
+    background: red;
+    border: 0.1px solid white;
 }

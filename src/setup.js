@@ -1,19 +1,10 @@
-export function populateTable(rows, cols, selector){
-    const table = document.querySelector(selector);
-    table.innerHTML = "";
-
-    const body = document.createElement("tbody");
+export function createBoard(rows, cols, selector){
+    let board = document.querySelector(selector);
     
     for (let i = 0; i < rows; i++) {
-        const row = document.createElement("tr");
-
-        for (let j = 0; j < cols; j++) {
-            const cell = document.createElement("td");
-            row.append(cell);
+        for(let j = 0; j < cols; j++) {
+            let block = `<div class="block ${i} ${j}"></div>`
+            board.innerHTML += block;
         }
-
-        body.appendChild(row);
     }
-    
-    table.appendChild(body);
 }

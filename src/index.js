@@ -1,5 +1,8 @@
 import "./styles.css";
 
-import { populateTable } from "./setup.js"
+import { createBoard } from "./setup.js"
 
-populateTable(20, 10, ".grid");
+createBoard(20, 10, ".board-section");
+
+let field = document.getElementsByClassName('block');
+console.log(field);
