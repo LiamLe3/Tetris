@@ -5,12 +5,15 @@
     --button-shadow: -5px 5px 10px #c4c7ca, 5px -5px 10px #ffffff;
     --button-shadow-inset: inset -5px 5px 10px #c4c7ca, inset 5px -5px 10px #ffffff;
 
-    --border-radius: 20px;
+    --game-radius: 20px;
+    --board-radius: 10px;
     --block-size: 25px;
+    --item-size: 75px;
     --game-width: 414px;
     --game-height: 736px;
 
     --button-size: 50px;
+    --button-radius: 25px;
 }
 
 * {
@@ -44,7 +47,7 @@ html {
     max-height: var(--game-height);
     background-color: var(--bg-color);
     box-shadow: var(--game-shadow);
-    border-radius: var(--border-radius);
+    border-radius: var(--game-radius);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -60,9 +63,9 @@ html {
 .held-item,
 .next-item {
     box-shadow: var(--board-shadow-inset);
-    border-radius: var(--border-radius);
-    width: 75px;
-    height: 75px;
+    border-radius: var(--game-radius);
+    width: var(--item-size);
+    height: var(--item-size);
     display:flex;
     align-items: center;
     justify-content: center;
@@ -74,11 +77,12 @@ html {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-weight: 600;
+    font-size: 40px;
 }
 
-#score {
-    font-weight: 600;
-    font-size: 25px;
+.info-item #level {
+    font-size: 20px;
 }
 
 .board-section {
@@ -86,7 +90,7 @@ html {
     grid-template-columns: repeat(10, 1fr);
     margin: auto;
     box-shadow: var(--board-shadow-inset);
-    border-radius: 10px;
+    border-radius: var(--board-radius);
     padding: 10px;
 }
 
@@ -105,15 +109,26 @@ html {
 
 .setting-section button {
     margin: 0 10px;
+    color: skyblue;
 }
+
 .btn {
+    background-color: var(--bg-color);
     width: var(--button-size);
     height: var(--button-size);
     box-shadow: var(--button-shadow);
-    border-radius: 25px;
+    border-radius: var(--button-radius);
     border: none;
     outline: none;
     cursor: pointer;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn#btn-pause {
+    font-size: 45px;
 }
 
 .btn:active {
