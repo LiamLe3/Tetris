@@ -13,7 +13,8 @@
     --game-height: 736px;
 
     --button-size: 50px;
-    --button-radius: 25px;
+    --button-border-radius: 25px;
+    --setting-button-color: skyblue;
 }
 
 * {
@@ -26,13 +27,13 @@ body,
 html {
     font-family: 'Krona One', sans-serif;
     height: 100vh;
-    background-color: white;
+    background-color: var(--bg-color);
     overflow:hidden;
+    user-select: none;
 }
 
 .container {
     position: relative;
-    background-color: var(--bg-color);
     height: 100%;
     display: flex;
     align-items: center;
@@ -72,7 +73,6 @@ html {
 }
 
 .info-item {
-    background: red;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -109,7 +109,7 @@ html {
 
 .setting-section button {
     margin: 0 10px;
-    color: skyblue;
+    color: var(--setting-button-color);
 }
 
 .btn {
@@ -117,7 +117,7 @@ html {
     width: var(--button-size);
     height: var(--button-size);
     box-shadow: var(--button-shadow);
-    border-radius: var(--button-radius);
+    border-radius: var(--button-border-radius);
     border: none;
     outline: none;
     cursor: pointer;
@@ -133,4 +133,30 @@ html {
 
 .btn:active {
     box-shadow: var(--button-shadow-inset);
+}
+
+@media only screen and (max-width: 425px) {
+    :root {
+        --block-size: 20px;
+    }
+
+    .game-wrapper {
+        box-shadow: unset;
+        border-radius: unset;
+    }
+
+    .setting-section {
+        position: absolute;
+        flex-direction: column;
+        transform: translateY(-50%);
+        top: 50%;
+        bottom: unset;
+        padding: unset;
+        right: 2px;
+        margin-top: -40px;
+    }
+
+    .setting-section button {
+        margin-bottom: 10px;
+    }
 }
