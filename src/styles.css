@@ -97,7 +97,6 @@ html {
 .block {
     width: var(--block-size);
     height: var(--block-size);
-    background: red;
     border: 0.1px solid var(--bg-color);
 }
 
