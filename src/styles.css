@@ -9,8 +9,8 @@
     --board-radius: 10px;
     --block-size: 25px;
     --item-size: 75px;
-    --game-width: 414px;
-    --game-height: 736px;
+    --game-width: 400px;
+    --game-height: 740px;
 
     --button-size: 50px;
     --button-border-radius: 25px;
@@ -58,7 +58,7 @@ html {
     position: relative;
     display: flex;
     justify-content: space-between;
-    padding: 20px;
+    padding: 20px 20px 0 20px;
 }
 
 .held-item,
@@ -134,6 +134,28 @@ html {
     box-shadow: var(--button-shadow-inset);
 }
 
+.control-section {
+    display: none;
+}
+
+.control-section button {
+    color: green;
+}
+
+.arrow-control {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.other-control {
+    display: flex;
+    justify-content: space-between;
+}
+
+.other-control button {
+    margin: 0 15px;
+}
+
 @media only screen and (max-width: 425px) {
     :root {
         --block-size: 20px;
@@ -157,5 +179,11 @@ html {
 
     .setting-section button {
         margin-bottom: 10px;
+    }
+
+    .control-section {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
     }
 }
