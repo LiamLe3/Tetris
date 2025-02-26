@@ -58,6 +58,18 @@ function drawTetromino(tetromino, grid) {
     })
 }
 
+function clearTetromino(tetromino, grid) {
+    tetromino.block.forEach((row, i) => {
+        row.forEach((value, j) => {
+            let x = tetromino.x + i;
+            let y = tetromino.y + j;
+            if(value > 0) {
+                field[grid[x][y].index].style.background = "transparent";
+            }
+        })
+    })
+}
+
 function rotateClockwise(matrix) {
     transpose(matrix);
     reverseRows(matrix);
