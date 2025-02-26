@@ -8,7 +8,6 @@ const KEY = {
     PAUSE: 80,
     STORE: 83,
     TOGGLE: 84,
-
 }
 
 export function handleKeyPress (event) {

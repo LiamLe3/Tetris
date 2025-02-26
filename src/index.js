@@ -11,21 +11,54 @@ document.addEventListener('keydown', handleKeyPress)
 function createBoard(rows, cols, selector){
     let board = document.querySelector(selector);
     
-    for (let i = 0; i < rows; i++) {
-        for(let j = 0; j < cols; j++) {
-            let block = `<div class="block ${i} ${j}"></div>`
-            board.innerHTML += block;
-        }
+    for (let i = 0; i < rows*cols; i++) {
+        let block = `<div class="block"></div>`
+        board.innerHTML += block;
     }
 }
 
 function createGrid (rows, cols){
     let grid = new Array(rows);
+    let index = 0;
     for(let i=0; i<rows; i++){
-        grid[i] = new Array(cols).fill(0);
+        grid[i] = new Array(cols);
+        
+        //Gives grid cell corresponding block index in field
+        for(let j=0; j<cols; j++){
+            grid[i][j] = {
+                index: index++,
+                value: 0
+            }
+        }
     }
+
     return grid;
 }
+
+const START_X = 0;
+const START_Y = 4;
+function createTetromino(block) {
+
+    return {
+        block: block,
+        x: START_X,
+        y: START_Y
+    }
+}
+
+function drawTetromino(tetromino, grid) {
+    tetromino.block.forEach((row, i) => {
+        row.forEach((value, j) => {
+            let x = tetromino.x + i;
+            let y = tetromino.y + j;
+            if(value > 0) {
+                field[grid[x][y].index].style.background = "red";
+            }
+        })
+    })
+}
+
+
 
 const tBlock = [
     [0,3,0],
@@ -33,29 +66,7 @@ const tBlock = [
     [0,0,0]
 ]
 
-function genTetromino(block, color, start_x, start_y){
-    return {
-        block: block,
-        color: '#44bd32',
-        x: start_x,
-        y: start_y
-    }
-}
-
-function drawTetromino(tetromino, grid){
-    tetromino.block.forEach(i => {
-        i.forEach(j => {
-            console.log(j);
-            /*
-            let row = tetromino.x + i;
-            let col = tetromino.y + j;
-            field[row][col].style.background = tetromino.color;*/
-        })
-    })
-}
-
 let grid = createGrid(20, 10);
-let tetromino = genTetromino(tBlock, '#44bd32', 0, 4);
+let tetromino = createTetromino(tBlock);
+rotateClockwise(tetromino.block);
 drawTetromino(tetromino, grid);
-
-field[0].style.background = tetromino.color;
