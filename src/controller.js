@@ -4,10 +4,11 @@ const KEY = {
     LEFT: 37,
     RIGHT: 39,
     SPACE: 32,
-    HELP: 72,
-    PAUSE: 80,
-    STORE: 83,
-    TOGGLE: 84,
+    C_ROTATE: 67,
+    HELP: 72, //H-key
+    PAUSE: 80, //P-key
+    STORE: 83, //S-key
+    TOGGLE: 84, //T-key
 }
 
 export function handleKeyPress (event) {
@@ -33,6 +34,9 @@ export function handleKeyPress (event) {
             break;
         case KEY.HELP:
             console.log("help");
+            break;
+        case KEY.HELP:
+            console.log("counter-rotate");
             break;
         case KEY.PAUSE:
             console.log("pause");

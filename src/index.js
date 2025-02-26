@@ -58,7 +58,32 @@ function drawTetromino(tetromino, grid) {
     })
 }
 
+function rotateClockwise(matrix) {
+    transpose(matrix);
+    reverseRows(matrix);
+}
 
+function rotateAntiClockwise(matrix){
+    transpose(matrix);
+    reverseCols(matrix);
+}
+
+function transpose(matrix) {
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < i; j++) {
+            // Swap the elements across the diagonal
+            [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
+        }
+    }
+}
+
+function reverseRows(matrix) {
+    matrix.forEach(row => row.reverse())
+}
+
+function reverseCols(matrix) {
+    matrix.reverse();
+}
 
 const tBlock = [
     [0,3,0],
@@ -68,5 +93,5 @@ const tBlock = [
 
 let grid = createGrid(20, 10);
 let tetromino = createTetromino(tBlock);
-rotateClockwise(tetromino.block);
+rotateAntiClockwise(tetromino.block);
 drawTetromino(tetromino, grid);
