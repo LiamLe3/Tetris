@@ -38,7 +38,6 @@ function createGrid (rows, cols){
 const START_X = 0;
 const START_Y = 4;
 function createTetromino(block) {
-
     return {
         block: block,
         x: START_X,
@@ -70,31 +69,111 @@ function clearTetromino(tetromino, grid) {
     })
 }
 
-function rotateClockwise(matrix) {
-    transpose(matrix);
-    reverseRows(matrix);
+function rotateClockwise(tetromino, grid){
+    if(!moveable(tetromino, grid, CLOCKWISE)) return;
+    clearTetromino(tetromino, grid);
+    transpose(tetromino.block);
+    reverseRows(tetromino.block);
+    drawTetromino(tetromino, grid);
 }
 
-function rotateAntiClockwise(matrix){
-    transpose(matrix);
-    reverseCols(matrix);
+function rotateAntiClockwise(tetromino, grid){
+    if(!moveable(tetromino, grid, ANTICLOCKWISE)) return;
+    clearTetromino(tetromino, grid);
+    transpose(tetromino.block);
+    reverseCols(tetromino.block);
+    drawTetromino(tetromino, grid);
 }
 
-function transpose(matrix) {
-    for (let i = 0; i < matrix.length; i++) {
+function transpose(block) {
+    for (let i = 0; i < block.length; i++) {
         for (let j = 0; j < i; j++) {
             // Swap the elements across the diagonal
-            [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
+            [block[i][j], block[j][i]] = [block[j][i], block[i][j]];
         }
     }
 }
 
-function reverseRows(matrix) {
-    matrix.forEach(row => row.reverse())
+function reverseRows(block) {
+    block.forEach(row => row.reverse())
 }
 
-function reverseCols(matrix) {
-    matrix.reverse();
+function reverseCols(block) {
+    block.reverse();
+}
+
+function shiftLeft(tetromino, grid) {
+    if(!moveable(tetromino, grid, LEFT)) return;
+    clearTetromino(tetromino, grid);
+    tetromino.y -= 1;
+    drawTetromino(tetromino, grid);
+}
+
+function shiftRight(tetromino, grid) {
+    if(!moveable(tetromino, grid, RIGHT)) return;
+    clearTetromino(tetromino, grid);
+    tetromino.y += 1;
+    drawTetromino(tetromino, grid);
+}
+
+function shiftDown(tetromino, grid) {
+    if(!moveable(tetromino, grid, DOWN)) return;
+    clearTetromino(tetromino, grid);
+    tetromino.x += 1;
+    drawTetromino(tetromino, grid);
+}
+
+const LEFT = 'LEFT';
+const RIGHT = 'RIGHT';
+const DOWN = 'DOWN';
+const CLOCKWISE = 'CLOCKWISE';
+const ANTICLOCKWISE = 'ANTICLOCKWISE';
+function moveable(tetromino, grid, direction) {
+    let newX = tetromino.x;
+    let newY = tetromino.y;
+    let cloneBlock = tetromino.block;
+    switch(direction){
+        case DOWN:
+            newX += 1;
+            break;
+        case LEFT:
+            newY -= 1;
+            break;
+        case RIGHT:
+            newY += 1;
+            break;
+        case CLOCKWISE:
+            cloneBlock = JSON.parse(JSON.stringify(tetromino.block));
+            console.log(JSON.parse(JSON.stringify(cloneBlock)));
+            transpose(cloneBlock);
+            reverseCols(cloneBlock)
+            console.log(JSON.parse(JSON.stringify(cloneBlock)));
+            break;
+        case ANTICLOCKWISE:
+            cloneBlock = JSON.parse(JSON.stringify(tetromino.block));
+            rotateAntiClockwise(cloneBlock);
+            break;
+    }
+
+    return isValidMovement(newX, newY, cloneBlock, grid)
+}
+
+function isValidMovement(newX, newY, block, grid) {
+    return block.every((row, i) => {
+        return row.every((value, j) => {
+            let x = newX + i;
+            let y = newY + j;
+            return value === 0 || isInBoundary(x, y) && isEmpty(x, y, grid);
+        })
+    })
+}
+
+function isInBoundary (x, y){
+    return x >= 0 && x < 20 && y >=0 && y < 9;
+}
+
+function isEmpty(x, y, grid) {
+    return grid[x][y].value === 0;
 }
 
 const tBlock = [
@@ -105,5 +184,5 @@ const tBlock = [
 
 let grid = createGrid(20, 10);
 let tetromino = createTetromino(tBlock);
-rotateAntiClockwise(tetromino.block);
 drawTetromino(tetromino, grid);
+rotateClockwise(tetromino, grid);
