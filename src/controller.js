@@ -21,6 +21,8 @@ export class GameController {
     }
     
     startGame() {
+        this.model.createTetromino();
+        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
         setInterval(() => {this.gameLoop()}, 100);
     }
 
@@ -35,15 +37,19 @@ export class GameController {
     
         switch(key) {
             case KEY.UP:
+                if(!this.model.tryMove('CLOCKWISE')) return;
                 this.handleMovement('CLOCKWISE');
                 break;
             case KEY.DOWN:
+                if(!this.model.tryMove('DOWN')) return;
                 this.handleMovement('DOWN');
                 break;
             case KEY.LEFT:
+                if(!this.model.tryMove('LEFT')) return;
                 this.handleMovement('LEFT');
                 break;
             case KEY.RIGHT:
+                if(!this.model.tryMove('RIGHT')) return;
                 this.handleMovement('RIGHT');
                 break;
             case KEY.SPACE:
@@ -69,18 +75,17 @@ export class GameController {
     }
 
     handleMovement(movement) {
-        if(this.model.tryMove(movement))
-            {
-                this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
-                this.model.moveTetromino(movement);
-                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
-            }
+        this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
+        this.model.moveTetromino(movement);
+        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
     }
 
     gameLoop() {
         if(this.model.tryMove('DOWN')){
-            this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
-            this.model.moveTetromino('DOWN');
+            this.handleMovement('DOWN');
+        } else {
+            this.model.updateGrid();
+            this.model.createTetromino();
             this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
         }
     }

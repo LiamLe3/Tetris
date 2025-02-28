@@ -67,7 +67,7 @@ const COLORS = [
 
 export class GameModel {
     constructor() {
-        this.tetromino = this.createTetromino();
+        this.tetromino = null;
         this.grid = this.createGrid(HEIGHT, WIDTH);
     }
 
@@ -81,7 +81,7 @@ export class GameModel {
 
     createTetromino() {
         let index = Math.floor(Math.random() * BLOCKS.length);
-        return {
+        this.tetromino = {
             block: BLOCKS[index],
             color: COLORS[index],
             x: START_X,
@@ -108,10 +108,17 @@ export class GameModel {
         return grid;
     }
 
-    fall() {
-        
+    updateGrid() {
+        this.tetromino.block.forEach((row, i) => {
+            row.forEach((value, j) => {
+                let x = this.tetromino.x + i;
+                let y = this.tetromino.y + j;
+                if(value > 0) {
+                    this.grid[x][y].value = value;
+                }
+            })
+        })
     }
-
     tryMove(movement) {
         let newX = this.tetromino.x;
         let newY = this.tetromino.y;
