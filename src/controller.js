@@ -11,14 +11,23 @@ const KEY = {
     TOGGLE: 84, //T-key
 }
 
+const INTERVAL = 1000;
 export class GameController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
 
-        document.addEventListener('keydown', this.handleKeyPress.bind(this));
+        document.addEventListener('keydown', (event) => this.handleKeyPress(event));
     }
     
+    startGame() {
+        setInterval(() => {this.gameLoop()}, 100);
+    }
+
+    stopGame() {
+        clearInterval(this.gameInterval);
+    }
+
     handleKeyPress(event) {
     
         event.preventDefault();
@@ -26,21 +35,16 @@ export class GameController {
     
         switch(key) {
             case KEY.UP:
-                console.log("up");
+                this.handleMovement('CLOCKWISE');
                 break;
             case KEY.DOWN:
-                console.log("down");
+                this.handleMovement('DOWN');
                 break;
             case KEY.LEFT:
-                if(this.model.tryMove('LEFT'))
-                {
-                    this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
-                    this.model.moveTetromino('LEFT');
-                    this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
-                }
+                this.handleMovement('LEFT');
                 break;
             case KEY.RIGHT:
-                console.log("right");
+                this.handleMovement('RIGHT');
                 break;
             case KEY.SPACE:
                 console.log("space");
@@ -48,7 +52,7 @@ export class GameController {
             case KEY.HELP:
                 console.log("help");
                 break;
-            case KEY.HELP:
+            case KEY.C_ROTATE:
                 console.log("counter-rotate");
                 break;
             case KEY.PAUSE:
@@ -60,7 +64,24 @@ export class GameController {
             case KEY.TOGGLE:
                 console.log("toggle");
                 break;
-            
+        }
+
+    }
+
+    handleMovement(movement) {
+        if(this.model.tryMove(movement))
+            {
+                this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
+                this.model.moveTetromino(movement);
+                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+            }
+    }
+
+    gameLoop() {
+        if(this.model.tryMove('DOWN')){
+            this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
+            this.model.moveTetromino('DOWN');
+            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
         }
     }
 }

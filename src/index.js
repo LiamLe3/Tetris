@@ -19,5 +19,6 @@ function createBoard(rows, cols, selector){
 let gameModel = new GameModel();
 let gameView = new GameView();
 let gameController = new GameController(gameModel, gameView);
+//gameView.drawTetromino(gameModel.getTetromino(), gameModel.getGrid());
 
-gameView.drawTetromino(gameModel.getTetromino(), gameModel.getGrid());
+gameController.startGame();

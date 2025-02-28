@@ -86,7 +86,7 @@ export class GameModel {
             color: COLORS[index],
             x: START_X,
             //If selected block shape is square, start position 1 block to right
-            y: index === SQUARE_INDEX ? START_Y + SQUARE_INDEX : START_Y
+            y: index === SQUARE_INDEX ? START_Y : START_Y
         }
     }
 
@@ -108,6 +108,10 @@ export class GameModel {
         return grid;
     }
 
+    fall() {
+        
+    }
+
     tryMove(movement) {
         let newX = this.tetromino.x;
         let newY = this.tetromino.y;
@@ -125,8 +129,8 @@ export class GameModel {
                 break;
             case CLOCKWISE:
                 cloneBlock = JSON.parse(JSON.stringify(this.tetromino.block));
-                transpose(cloneBlock);
-                reverseRows(cloneBlock)
+                this.transpose(cloneBlock);
+                this.reverseRows(cloneBlock)
                 break;
         }
 
@@ -144,9 +148,9 @@ export class GameModel {
             case RIGHT:
                 this.tetromino.y += 1;
                 break;
-            case CLOSEWISE:
-                transpose(this.tetromino.block);
-                reverseRows(this.tetromino.block);
+            case CLOCKWISE:
+                this.transpose(this.tetromino.block);
+                this.reverseRows(this.tetromino.block);
         }
     }
 
