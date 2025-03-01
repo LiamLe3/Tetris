@@ -3,6 +3,7 @@ const RIGHT = 'RIGHT';
 const DOWN = 'DOWN';
 const CLOCKWISE = 'CLOCKWISE';
 const ANTICLOCKWISE = 'ANTICLOCKWISE';
+const TRANSPARENT = 'transparent';
 
 const START_X = 0;
 const START_Y = 3;
@@ -10,7 +11,8 @@ const START_Y = 3;
 const HEIGHT = 20;
 const WIDTH = 10;
 
-const SQUARE_INDEX = 1;
+const SQUARE = 1;
+const EMPTY = 0;
 
 const iBlock = [
     [0, 0, 0, 0],
@@ -71,6 +73,10 @@ export class GameModel {
         this.grid = this.createGrid(HEIGHT, WIDTH);
     }
 
+    setDrawCellCallback(callback) {
+        this.drawCellCallback = callback;
+    }
+
     getTetromino() {
         return this.tetromino;
     }
@@ -86,7 +92,7 @@ export class GameModel {
             color: COLORS[index],
             x: START_X,
             //If selected block shape is square, start position 1 block to right
-            y: index === SQUARE_INDEX ? START_Y : START_Y
+            y: index === SQUARE ? START_Y + SQUARE : START_Y
         }
     }
 
@@ -108,6 +114,35 @@ export class GameModel {
         return grid;
     }
 
+    checkRows() {
+        this.grid.forEach((row, index) => {
+            if(this.isFilledRow(row)) {
+                
+                this.clearRow(index);
+                console.log(this.grid);
+            }
+        })
+    }
+
+    isFilledRow(row) {
+        return row.every(cell => {
+            return cell.value !== EMPTY;
+        })
+    }
+
+    clearRow(index) {
+        for(let row=index; row>0; row--){
+            for(let col=0; col<WIDTH; col++){
+                this.grid[row][col].value = this.grid[row-1][col].value; 
+                
+                let value = this.grid[row][col].value;
+                let color = value === 0 ? TRANSPARENT : COLORS[value - 1];
+                let index = this.grid[row][col].index;
+                this.drawCellCallback(color, index);
+            }
+        }
+    }
+
     updateGrid() {
         this.tetromino.block.forEach((row, i) => {
             row.forEach((value, j) => {
@@ -119,6 +154,7 @@ export class GameModel {
             })
         })
     }
+
     tryMove(movement) {
         let newX = this.tetromino.x;
         let newY = this.tetromino.y;

@@ -17,13 +17,17 @@ export class GameController {
         this.model = model;
         this.view = view;
 
+        this.model.setDrawCellCallback((color, index) => {
+            this.view.drawCell(color, index);
+        })
+        
         document.addEventListener('keydown', (event) => this.handleKeyPress(event));
     }
     
     startGame() {
         this.model.createTetromino();
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
-        setInterval(() => {this.gameLoop()}, 100);
+        setInterval(() => {this.gameLoop()}, 1000);
     }
 
     stopGame() {
@@ -85,6 +89,7 @@ export class GameController {
             this.handleMovement('DOWN');
         } else {
             this.model.updateGrid();
+            this.model.checkRows();
             this.model.createTetromino();
             this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
         }
