@@ -4,7 +4,6 @@ export class GameView {
     }
 
     drawCell(color, index) {
-        console.log("HELP");
         this.field[index].style.background = color;
     }
 
@@ -14,7 +13,8 @@ export class GameView {
                 let x = tetromino.x + i;
                 let y = tetromino.y + j;
                 if(value > 0) {
-                    this.field[grid[x][y].index].style.background = tetromino.color;
+                    let index = grid[x][y].index;
+                    this.field[index].style.background = tetromino.color;
                 }
             })
         })

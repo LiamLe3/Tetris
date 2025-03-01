@@ -88,7 +88,7 @@ export class GameModel {
     createTetromino() {
         let index = Math.floor(Math.random() * BLOCKS.length);
         this.tetromino = {
-            block: BLOCKS[index],
+            block: JSON.parse(JSON.stringify(BLOCKS[index])),
             color: COLORS[index],
             x: START_X,
             //If selected block shape is square, start position 1 block to right
@@ -131,9 +131,13 @@ export class GameModel {
     }
 
     clearRow(index) {
-        for(let row=index; row>0; row--){
+        for(let row=index; row >= 0; row--){
             for(let col=0; col<WIDTH; col++){
-                this.grid[row][col].value = this.grid[row-1][col].value; 
+                if(row === 0) {
+                    this.grid[row][col].value = 0;
+                } else {
+                    this.grid[row][col].value = this.grid[row-1][col].value; 
+                }
                 
                 let value = this.grid[row][col].value;
                 let color = value === 0 ? TRANSPARENT : COLORS[value - 1];

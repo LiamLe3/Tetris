@@ -20,14 +20,14 @@ export class GameController {
         this.model.setDrawCellCallback((color, index) => {
             this.view.drawCell(color, index);
         })
-        
+
         document.addEventListener('keydown', (event) => this.handleKeyPress(event));
     }
     
     startGame() {
         this.model.createTetromino();
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
-        setInterval(() => {this.gameLoop()}, 1000);
+        setInterval(() => {this.gameLoop()}, INTERVAL);
     }
 
     stopGame() {
