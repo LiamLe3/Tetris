@@ -12,6 +12,9 @@ export class GameView {
             row.forEach((value, j) => {
                 let x = tetromino.x + i;
                 let y = tetromino.y + j;
+
+                if(x < 0) return; // Stops drawings above grid
+
                 if(value > 0) {
                     let index = grid[x][y].index;
                     this.field[index].style.background = tetromino.color;
@@ -25,6 +28,9 @@ export class GameView {
             row.forEach((value, j) => {
                 let x = tetromino.x + i;
                 let y = tetromino.y + j;
+
+                if(x<0) return; // Stops clearing above grid
+                
                 if(value > 0) {
                     let index = grid[x][y].index;
                     this.field[index].style.background = "transparent";

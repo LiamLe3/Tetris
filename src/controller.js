@@ -11,11 +11,12 @@ const KEY = {
     TOGGLE: 84, //T-key
 }
 
-const INTERVAL = 1000;
+const INTERVAL = 2000;
 export class GameController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
+        this.gameInterval = null;
 
         this.model.setDrawCellCallback((color, index) => {
             this.view.drawCell(color, index);
@@ -27,7 +28,7 @@ export class GameController {
     startGame() {
         this.model.createTetromino();
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
-        setInterval(() => {this.gameLoop()}, INTERVAL);
+        this.gameInterval = setInterval(() => {this.gameLoop()}, INTERVAL);
     }
 
     stopGame() {
@@ -91,7 +92,18 @@ export class GameController {
             this.model.updateGrid();
             this.model.checkRows();
             this.model.createTetromino();
-            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+            let temp = this.model.getTetromino();
+
+            if(this.model.isValidMovement(temp.x, temp.y, temp.block)) {
+                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+            } else if(this.model.tryMove('UP')){
+                this.model.moveTetromino('UP');
+                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+            } else {
+                console.log("GAME OVER");
+                this.stopGame();
+            }
+            
         }
     }
 }

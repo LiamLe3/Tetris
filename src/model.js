@@ -1,3 +1,4 @@
+const UP = 'UP';
 const LEFT = 'LEFT';
 const RIGHT = 'RIGHT';
 const DOWN = 'DOWN';
@@ -11,7 +12,7 @@ const START_Y = 3;
 const HEIGHT = 20;
 const WIDTH = 10;
 
-const SQUARE = 1;
+const SQUARE = 0;
 const EMPTY = 0;
 
 const iBlock = [
@@ -56,7 +57,7 @@ const jBlock = [
     [0, 0, 0]
 ]
 
-const BLOCKS = [ iBlock, oBlock, tBlock, sBlock, zBlock, lBlock, jBlock ];
+const BLOCKS = [ jBlock, jBlock, jBlock, jBlock, jBlock, jBlock, jBlock ];
 const COLORS = [
     '#c23616',
     '#0097e6',
@@ -152,6 +153,9 @@ export class GameModel {
             row.forEach((value, j) => {
                 let x = this.tetromino.x + i;
                 let y = this.tetromino.y + j;
+
+                if(x < 0) return; // Skips blocks above grid
+
                 if(value > 0) {
                     this.grid[x][y].value = value;
                 }
@@ -165,6 +169,9 @@ export class GameModel {
         let cloneBlock = this.tetromino.block;
 
         switch(movement) {
+            case UP:
+                newX -= 1;
+                break;
             case DOWN:
                 newX += 1;
                 break;
@@ -186,6 +193,9 @@ export class GameModel {
 
     moveTetromino(direction) {
         switch(direction) {
+            case UP:
+                this.tetromino.x -= 1;
+                break;
             case DOWN:
                 this.tetromino.x += 1;
                 break;
@@ -206,6 +216,7 @@ export class GameModel {
             return row.every((value, j) => {
                 let x = newX + i;
                 let y = newY + j;
+                if(x < 0) return true;
                 return value === 0 || this.inBoundary(x, y) && this.isEmpty(x, y);
             })
         })
