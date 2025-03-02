@@ -12,8 +12,20 @@ const START_Y = 3;
 const HEIGHT = 20;
 const WIDTH = 10;
 
-const SQUARE = 0;
+const LINE = 0;
+const SQUARE = 1;
+const OTHER = 2;
 const EMPTY = 0;
+
+const ORIENTATIONS = 4;
+const START_O = 0;
+const RIGHT_O = 1;
+const FLIP_O = 2;
+const LEFT_O = 3;
+
+const ROTATE_RIGHT = 1;
+const ROTATE_LEFT = -1;
+
 
 const iBlock = [
     [0, 0, 0, 0],
@@ -57,7 +69,28 @@ const jBlock = [
     [0, 0, 0]
 ]
 
-const BLOCKS = [ jBlock, jBlock, jBlock, jBlock, jBlock, jBlock, jBlock ];
+const lineKickTable = [
+    [{x: 0, y: 0}, {x: -2, y: 0}, {x: 1, y: 0}, {x: -2, y: -1}, {x: 1, y: 2}], //0->R L->2 [Move East]
+    [{x: 0, y: 0}, {x: 2, y: 0}, {x: -1, y: 0}, {x: 2, y: 1}, {x: -1, y: -2}], //2->L R->0  [Move West]
+    [{x: 0, y: 0}, {x: -1, y: 0}, {x: 2, y: 0}, {x: -1, y: 2}, {x: 2, y: -1}], //R->2 0->L [Move South]
+    [{x: 0, y: 0}, {x: 1, y: 0}, {x: -2, y: 0}, {x: 1, y: -2}, {x: -2, y: 1}] //L->0 2->R [Move North]
+];
+
+const otherKickTable = [
+    [{x: 0, y: 0}, {x: -1, y: 0}, {x: -1, y: -1}, {x: 0, y: 2}, {x: -1, y: 2}] // L->2 L->0 [Starts from L]
+    [{x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: -1}, {x: 0, y: 2}, {x: 1, y: 2}], // R->0 R->2 [Starts from R]
+    [{x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 0, y: -2}, {x: 1, y: -2}], // 2->L 0->L [Ends in L]
+    [{x: 0, y: 0}, {x: -1, y: 0}, {x: -1, y: 1}, {x: 0, y: -2}, {x: -1, y: -2}], // 0->R 2->R [Ends in R]       
+];
+
+/*
+    (0->R L->2)
+    (R->0 2->L)
+    (R->2 0->L)
+    (2->R L->0)
+
+*/
+const BLOCKS = [ iBlock, oBlock, tBlock, sBlock, zBlock, lBlock, jBlock ];
 const COLORS = [
     '#c23616',
     '#0097e6',
@@ -92,8 +125,13 @@ export class GameModel {
             block: JSON.parse(JSON.stringify(BLOCKS[index])),
             color: COLORS[index],
             x: START_X,
-            //If selected block shape is square, start position 1 block to right
-            y: index === SQUARE ? START_Y + SQUARE : START_Y
+
+            //Adjusts position for Square spawns
+            y: index === SQUARE ? START_Y + SQUARE : START_Y,
+
+            //for wall kicks, blocks that are not line or square have same behaviour
+            kickId: index > SQUARE ? OTHER : index,
+            orientation: 0
         }
     }
 
@@ -117,10 +155,8 @@ export class GameModel {
 
     checkRows() {
         this.grid.forEach((row, index) => {
-            if(this.isFilledRow(row)) {
-                
+            if(this.isFilledRow(row)) {     
                 this.clearRow(index);
-                console.log(this.grid);
             }
         })
     }
@@ -188,7 +224,64 @@ export class GameModel {
                 break;
         }
 
-        return this.isValidMovement(newX, newY, cloneBlock);
+        return this.isValidMovement(newX, newY);
+    }
+
+    tryRotate(rotation) {
+        let direction;
+        let cloneBlock = JSON.parse(JSON.stringify(this.tetromino.block));
+        this.transpose(cloneBlock);
+        if(rotation === CLOCKWISE) {
+            direction = ROTATE_RIGHT;
+            this.reverseRows(cloneBlock);
+        } else {
+            direction = ROTATE_LEFT;
+            this.reverseCols(cloneBlock);
+        }
+
+        let endOrientation = (this.tetromino.orientation + direction) % ORIENTATIONS;
+        let testId;
+        switch(this.tetromino.kickId) {
+            case LINE:
+                testId = this.getIBlockTest(this.tetromino.orientation, endOrientation);
+                return this.runIBlockTest(testId);
+            case SQUARE:
+                testId = this.getOtherBlockTest(this.tetromino.orientation, endOrientation);
+                return false;
+            case OTHER:
+                break;
+        }
+    }
+
+    runIBlockTest(testId){
+        lineKickTable[testId];
+    }
+
+    getIBlockTest (currentOrientation, endOrientation){
+        if((currentOrientation === 0 && endOrientation === RIGHT_O)
+            || currentOrientation === LEFT_O && endOrientation === FLIP_O){
+            return 0;
+        } else if((currentOrientation === FLIP_O && endOrientation === LEFT)
+            || currentOrientation === RIGHT && endOrientation === START_O){
+            return 1;
+        } else if((currentOrientation === RIGHT && endOrientation === FLIP_O)
+            || currentOrientation === START_O && endOrientation === LEFT){
+            return 2;
+        } else {
+            return 3;
+        } 
+    }
+
+    getOtherBlockTest(currentOrientation, endOrientation) {
+        if(currentOrientation === LEFT_O) {
+            return 0;
+        } else if(currentOrientation === RIGHT_O) {
+            return 1;
+        } else if(endOrientation === LEFT_O) {
+            return 2
+        } else {
+            return 3;
+        }
     }
 
     moveTetromino(direction) {
@@ -211,8 +304,8 @@ export class GameModel {
         }
     }
 
-    isValidMovement(newX, newY, block) {
-        return block.every((row, i) => {
+    isValidMovement(newX, newY) {
+        return this.tetromino.block.every((row, i) => {
             return row.every((value, j) => {
                 let x = newX + i;
                 let y = newY + j;

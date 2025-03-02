@@ -42,8 +42,6 @@ export class GameController {
     
         switch(key) {
             case KEY.UP:
-                if(!this.model.tryMove('CLOCKWISE')) return;
-                this.handleMovement('CLOCKWISE');
                 break;
             case KEY.DOWN:
                 if(!this.model.tryMove('DOWN')) return;
