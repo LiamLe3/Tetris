@@ -77,10 +77,10 @@ const lineKickTable = [
 ];
 
 const otherKickTable = [
-    [{x: 0, y: 0}, {x: -1, y: 0}, {x: -1, y: -1}, {x: 0, y: 2}, {x: -1, y: 2}] // L->2 L->0 [Starts from L]
-    [{x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: -1}, {x: 0, y: 2}, {x: 1, y: 2}], // R->0 R->2 [Starts from R]
-    [{x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 0, y: -2}, {x: 1, y: -2}], // 2->L 0->L [Ends in L]
-    [{x: 0, y: 0}, {x: -1, y: 0}, {x: -1, y: 1}, {x: 0, y: -2}, {x: -1, y: -2}], // 0->R 2->R [Ends in R]       
+    [{x: 0, y: 0}, {x: 0, y: -1}, {x: -1, y: -1}, {x: 2, y: 0}, {x: 2, y: -1}], // L->2 L->0 [Starts from L]
+    [{x: 0, y: 0}, {x: 0, y: 1}, {x: -1, y: 1}, {x: 2, y: 0}, {x: 2, y: 1}], // R->0 R->2 [Starts from R]
+    [{x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}, {x: -2, y: 0}, {x: -2, y: 1}], // 2->L 0->L [Ends in L]
+    [{x: 0, y: 0}, {x: 0, y: -1}, {x: 1, y: -1}, {x: -2, y: 0}, {x: -2, y: -1}] // 0->R 2->R [Ends in R]       
 ];
 
 /*
@@ -202,12 +202,8 @@ export class GameModel {
     tryMove(movement) {
         let newX = this.tetromino.x;
         let newY = this.tetromino.y;
-        let cloneBlock = this.tetromino.block;
 
         switch(movement) {
-            case UP:
-                newX -= 1;
-                break;
             case DOWN:
                 newX += 1;
                 break;
@@ -217,19 +213,15 @@ export class GameModel {
             case RIGHT:
                 newY += 1;
                 break;
-            case CLOCKWISE:
-                cloneBlock = JSON.parse(JSON.stringify(this.tetromino.block));
-                this.transpose(cloneBlock);
-                this.reverseRows(cloneBlock)
-                break;
         }
 
-        return this.isValidMovement(newX, newY);
+        return this.isValidPosition(newX, newY);
     }
 
     tryRotate(rotation) {
         let direction;
         let cloneBlock = JSON.parse(JSON.stringify(this.tetromino.block));
+
         this.transpose(cloneBlock);
         if(rotation === CLOCKWISE) {
             direction = ROTATE_RIGHT;
@@ -238,23 +230,87 @@ export class GameModel {
             direction = ROTATE_LEFT;
             this.reverseCols(cloneBlock);
         }
+        
+        console.log(cloneBlock);
 
-        let endOrientation = (this.tetromino.orientation + direction) % ORIENTATIONS;
+        let currentOrientation = this.tetromino.orientation;
+        let endOrientation = (currentOrientation + direction) % ORIENTATIONS;
         let testId;
+        let result;
         switch(this.tetromino.kickId) {
             case LINE:
-                testId = this.getIBlockTest(this.tetromino.orientation, endOrientation);
-                return this.runIBlockTest(testId);
+                testId = this.getIBlockTest(currentOrientation, endOrientation);
+                result = this.runIBlockTest(testId, cloneBlock);
+                return {
+                    ...result,
+                    newOrientation: endOrientation
+                }
             case SQUARE:
-                testId = this.getOtherBlockTest(this.tetromino.orientation, endOrientation);
-                return false;
+                return {
+                    rotatable: false
+                }
             case OTHER:
-                break;
+                testId = this.getOtherBlockTest(currentOrientation, endOrientation);
+                result = this.runOtherBlockTest(testId, cloneBlock);
+                return {
+                    ...result,
+                    newOrientation: endOrientation
+                }
         }
     }
 
-    runIBlockTest(testId){
-        lineKickTable[testId];
+    updateTetromino(result) {
+        this.tetromino.block = result.cloneBlock;
+        this.tetromino.x = result.x;
+        this.tetromino.y = result.y;
+        this.tetromino.orientation = result.newOrientation;
+    }
+
+    runIBlockTest(testId, block){
+        let result = { rotatable: false };
+
+        lineKickTable[testId].some(test => {
+            let newX = this.tetromino.x + test.x;
+            let newY = this.tetromino.y + test.y;
+            if(this.isValidPosition(newX, newY, block)) {
+                result = {
+                    rotatable: true,
+                    cloneBlock: block,
+                    x: newX,
+                    y: newY
+                };
+                
+                return true;
+            }
+
+            return false;
+        })
+
+        return result;
+    }
+
+    runOtherBlockTest(testId, block) {
+        let result = { rotatable: false };
+
+        otherKickTable[testId].some(test => {
+            let newX = this.tetromino.x + test.x;
+            let newY = this.tetromino.y + test.y;
+
+            if(this.isValidPosition(newX, newY, block)) {
+                result = {
+                    rotatable: true,
+                    cloneBlock: block,
+                    x: newX,
+                    y: newY
+                };
+                
+                return true;
+            }
+
+            return false;
+        })
+
+        return result;
     }
 
     getIBlockTest (currentOrientation, endOrientation){
@@ -298,14 +354,11 @@ export class GameModel {
             case RIGHT:
                 this.tetromino.y += 1;
                 break;
-            case CLOCKWISE:
-                this.transpose(this.tetromino.block);
-                this.reverseRows(this.tetromino.block);
         }
     }
 
-    isValidMovement(newX, newY) {
-        return this.tetromino.block.every((row, i) => {
+    isValidPosition(newX, newY, block = this.tetromino.block) {
+        return block.every((row, i) => {
             return row.every((value, j) => {
                 let x = newX + i;
                 let y = newY + j;

@@ -42,17 +42,15 @@ export class GameController {
     
         switch(key) {
             case KEY.UP:
+                this.handleRotation('CLOCKWISE');
                 break;
             case KEY.DOWN:
-                if(!this.model.tryMove('DOWN')) return;
                 this.handleMovement('DOWN');
                 break;
             case KEY.LEFT:
-                if(!this.model.tryMove('LEFT')) return;
                 this.handleMovement('LEFT');
                 break;
             case KEY.RIGHT:
-                if(!this.model.tryMove('RIGHT')) return;
                 this.handleMovement('RIGHT');
                 break;
             case KEY.SPACE:
@@ -78,8 +76,17 @@ export class GameController {
     }
 
     handleMovement(movement) {
+        if(!this.model.tryMove(movement)) return;
         this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
         this.model.moveTetromino(movement);
+        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+    }
+
+    handleRotation(rotation) {
+        let result = this.model.tryRotate(rotation);
+        if(!result.rotatable) return;
+        this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
+        this.model.updateTetromino(result);
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
     }
 
@@ -92,7 +99,7 @@ export class GameController {
             this.model.createTetromino();
             let temp = this.model.getTetromino();
 
-            if(this.model.isValidMovement(temp.x, temp.y, temp.block)) {
+            if(this.model.isValidPosition(temp.x, temp.y, temp.block)) {
                 this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
             } else if(this.model.tryMove('UP')){
                 this.model.moveTetromino('UP');
