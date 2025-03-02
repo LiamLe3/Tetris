@@ -70,10 +70,14 @@ const jBlock = [
 ]
 
 const lineKickTable = [
-    [{x: 0, y: 0}, {x: -2, y: 0}, {x: 1, y: 0}, {x: -2, y: -1}, {x: 1, y: 2}], //0->R L->2 [Move East]
-    [{x: 0, y: 0}, {x: 2, y: 0}, {x: -1, y: 0}, {x: 2, y: 1}, {x: -1, y: -2}], //2->L R->0  [Move West]
-    [{x: 0, y: 0}, {x: -1, y: 0}, {x: 2, y: 0}, {x: -1, y: 2}, {x: 2, y: -1}], //R->2 0->L [Move South]
-    [{x: 0, y: 0}, {x: 1, y: 0}, {x: -2, y: 0}, {x: 1, y: -2}, {x: -2, y: 1}] //L->0 2->R [Move North]
+    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 2, y: 1}, {x: -1, y: -2}], //0->R
+    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 1, y: 2}, {x: -2, y: -1}], //R->0
+    [{x: 0, y: 0}, {x: 0, y: -1}, {x: 0, y: 2}, {x: 2, y: -1}, {x: -1, y: 2}], //R->2
+    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 1, y: -2}, {x: -1, y: 1}], //2->R
+    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 1, y: 2}, {x: -1, y: -1}], //2->L
+    [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: -2}, {x: 2, y: 1}, {x: -1, y: -2}], //L->2
+    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 1, y: -2}, {x: -2, y: 1}], //L->0
+    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 2, y: -1}, {x: -1, y: 2}]  //0->L
 ];
 
 const otherKickTable = [
@@ -314,18 +318,23 @@ export class GameModel {
     }
 
     getIBlockTest (currentOrientation, endOrientation){
-        if((currentOrientation === 0 && endOrientation === RIGHT_O)
-            || currentOrientation === LEFT_O && endOrientation === FLIP_O){
+        if(currentOrientation === 0 && endOrientation === RIGHT_O){
             return 0;
-        } else if((currentOrientation === FLIP_O && endOrientation === LEFT)
-            || currentOrientation === RIGHT && endOrientation === START_O){
+        } else if(currentOrientation === RIGHT_O && endOrientation === START_O){
             return 1;
-        } else if((currentOrientation === RIGHT && endOrientation === FLIP_O)
-            || currentOrientation === START_O && endOrientation === LEFT){
+        } else if(currentOrientation === RIGHT_O && endOrientation === FLIP_O){
             return 2;
-        } else {
+        } else if(currentOrientation === FLIP_O && endOrientation === RIGHT_O){
             return 3;
-        } 
+        } else if(currentOrientation === FLIP_O && endOrientation === LEFT_O){
+            return 4;
+        } else if(currentOrientation === LEFT_O && endOrientation === FLIP_O){
+            return 5;
+        } else if(currentOrientation === LEFT_O && endOrientation === START_O){
+            return 6;
+        } else {
+            return 7;
+        }
     }
 
     getOtherBlockTest(currentOrientation, endOrientation) {
