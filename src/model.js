@@ -107,6 +107,7 @@ export class GameModel {
         this.grid = null;
         this.bag = null;
         this.nextBlockId = null;
+        this.ghostX = null;
     }
 
     setDrawCellCallback(callback) {
@@ -119,6 +120,10 @@ export class GameModel {
 
     getGrid() {
         return this.grid;
+    }
+
+    getGhostX() {
+        return this.ghostX;
     }
 
     getNextTetromino() {
@@ -144,7 +149,7 @@ export class GameModel {
             x: START_X,
 
             //Adjusts position for Square spawns
-            y: this.nextBlockKey === SQUARE ? START_Y + SQUARE : START_Y,
+            y: this.nextBlockId === SQUARE ? START_Y + SQUARE : START_Y,
 
             //for wall kicks, blocks that are not line or square have same behaviour
             kickId: this.nextBlockId > SQUARE ? OTHER : this.nextBlockId,
@@ -152,6 +157,15 @@ export class GameModel {
         }
 
         this.getNextTetromino();
+    }
+
+    calculateGhostX() {
+        this.ghostX = 0;
+        let newX = this.tetromino.x + this.ghostX;
+        while(this.isValidPosition(newX, this.tetromino.y)){
+            newX++;
+        }
+        this.ghostX = newX - 1;
     }
 
     createGrid(rows, cols){
@@ -377,7 +391,7 @@ export class GameModel {
         }
     }
 
-    isValidPosition(newX, newY, block = this.tetromino.block) {
+    isValidPosition(newX = this.tetromino.x, newY = this.tetromino.y, block = this.tetromino.block) {
         return block.every((row, i) => {
             return row.every((value, j) => {
                 let x = newX + i;
