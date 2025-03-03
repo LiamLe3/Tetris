@@ -26,6 +26,10 @@ export class GameController {
     }
     
     startGame() {
+        this.model.createGrid(20, 10);
+        this.model.generateNewBag();
+        this.model.getNextTetromino();
+
         this.model.createTetromino();
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
         this.gameInterval = setInterval(() => {this.gameLoop()}, INTERVAL);
@@ -54,7 +58,7 @@ export class GameController {
                 this.handleMovement('RIGHT');
                 break;
             case KEY.SPACE:
-                console.log("space");
+                this.handleHardDrop();
                 break;
             case KEY.HELP:
                 console.log("help");
@@ -88,6 +92,27 @@ export class GameController {
         this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid());
         this.model.updateTetromino(result);
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+    }
+
+    handleHardDrop() {
+        while(this.model.tryMove('DOWN')){
+            this.handleMovement('DOWN');
+        }
+
+        this.model.updateGrid();
+        this.model.checkRows();
+        this.model.createTetromino();
+        let temp = this.model.getTetromino();
+
+        if(this.model.isValidPosition(temp.x, temp.y, temp.block)) {
+            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+        } else if(this.model.tryMove('UP')){
+            this.model.moveTetromino('UP');
+            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid());
+        } else {
+            console.log("GAME OVER");
+            this.stopGame();
+        }
     }
 
     gameLoop() {

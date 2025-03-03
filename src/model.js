@@ -69,7 +69,7 @@ const jBlock = [
     [0, 0, 0]
 ]
 
-const lineKickTable = [
+const iKickTable = [
     [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 2, y: 1}, {x: -1, y: -2}], //0->R
     [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 1, y: 2}, {x: -2, y: -1}], //R->0
     [{x: 0, y: 0}, {x: 0, y: -1}, {x: 0, y: 2}, {x: 2, y: -1}, {x: -1, y: 2}], //R->2
@@ -87,14 +87,10 @@ const otherKickTable = [
     [{x: 0, y: 0}, {x: 0, y: -1}, {x: 1, y: -1}, {x: -2, y: 0}, {x: -2, y: -1}] // 0->R 2->R [Ends in R]       
 ];
 
-/*
-    (0->R L->2)
-    (R->0 2->L)
-    (R->2 0->L)
-    (2->R L->0)
+const BLOCKS = [ iBlock, oBlock, tBlock, sBlock, zBlock, lBlock, jBlock ]
 
-*/
-const BLOCKS = [ iBlock, oBlock, tBlock, sBlock, zBlock, lBlock, jBlock ];
+const BLOCK_ID = [ 0, 1, 2, 3, 4, 5, 6 ];
+
 const COLORS = [
     '#c23616',
     '#0097e6',
@@ -108,7 +104,9 @@ const COLORS = [
 export class GameModel {
     constructor() {
         this.tetromino = null;
-        this.grid = this.createGrid(HEIGHT, WIDTH);
+        this.grid = null;
+        this.bag = null;
+        this.nextBlockId = null;
     }
 
     setDrawCellCallback(callback) {
@@ -123,38 +121,53 @@ export class GameModel {
         return this.grid;
     }
 
-    createTetromino() {
-        let index = Math.floor(Math.random() * BLOCKS.length);
-        this.tetromino = {
-            block: JSON.parse(JSON.stringify(BLOCKS[index])),
-            color: COLORS[index],
-            x: START_X,
+    getNextTetromino() {
+        if(this.bag.length === 0){
+            this.blockBag = this.generateNewBag();
+        }
+        
+        this.nextBlockId = this.bag.pop();
+    }
 
-            //Adjusts position for Square spawns
-            y: index === SQUARE ? START_Y + SQUARE : START_Y,
-
-            //for wall kicks, blocks that are not line or square have same behaviour
-            kickId: index > SQUARE ? OTHER : index,
-            orientation: 0
+    generateNewBag() {
+        this.bag = [...BLOCK_ID];
+        for (let i = this.bag.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.bag[i], this.bag[j]] = [this.bag[j], this.bag[i]];
         }
     }
 
+    createTetromino() {
+        this.tetromino = {
+            block: JSON.parse(JSON.stringify(BLOCKS[this.nextBlockId])),
+            color: COLORS[this.nextBlockId],
+            x: START_X,
+
+            //Adjusts position for Square spawns
+            y: this.nextBlockKey === SQUARE ? START_Y + SQUARE : START_Y,
+
+            //for wall kicks, blocks that are not line or square have same behaviour
+            kickId: this.nextBlockId > SQUARE ? OTHER : this.nextBlockId,
+            orientation: 0
+        }
+
+        this.getNextTetromino();
+    }
+
     createGrid(rows, cols){
-        let grid = new Array(rows);
+        this.grid = new Array(rows);
         let index = 0;
         for(let i=0; i<rows; i++){
-            grid[i] = new Array(cols);
+            this.grid[i] = new Array(cols);
             
             //Gives grid cell corresponding block index in field
             for(let j=0; j<cols; j++){
-                grid[i][j] = {
+                this.grid[i][j] = {
                     index: index++,
                     value: 0
                 }
             }
         }
-    
-        return grid;
     }
 
     checkRows() {
@@ -234,8 +247,6 @@ export class GameModel {
             direction = ROTATE_LEFT;
             this.reverseCols(cloneBlock);
         }
-        
-        console.log(cloneBlock);
 
         let currentOrientation = this.tetromino.orientation;
         let endOrientation = (currentOrientation + direction) % ORIENTATIONS;
@@ -273,7 +284,7 @@ export class GameModel {
     runIBlockTest(testId, block){
         let result = { rotatable: false };
 
-        lineKickTable[testId].some(test => {
+        iKickTable[testId].some(test => {
             let newX = this.tetromino.x + test.x;
             let newY = this.tetromino.y + test.y;
             if(this.isValidPosition(newX, newY, block)) {
