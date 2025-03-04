@@ -1,95 +1,9 @@
-const UP = 'UP';
-const LEFT = 'LEFT';
-const RIGHT = 'RIGHT';
-const DOWN = 'DOWN';
-const CLOCKWISE = 'CLOCKWISE';
-const ANTICLOCKWISE = 'ANTICLOCKWISE';
+
 const TRANSPARENT = 'transparent';
 
-const START_X = 0;
-const START_Y = 3;
-
-const HEIGHT = 20;
 const WIDTH = 10;
 
-const LINE = 0;
-const SQUARE = 1;
-const OTHER = 2;
 const EMPTY = 0;
-
-const ORIENTATIONS = 4;
-const START_O = 0;
-const RIGHT_O = 1;
-const FLIP_O = 2;
-const LEFT_O = 3;
-
-const ROTATE_RIGHT = 1;
-const ROTATE_LEFT = -1;
-
-
-const iBlock = [
-    [0, 0, 0, 0],
-    [1, 1, 1, 1],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-];
-
-const oBlock = [
-    [2,2],
-    [2,2]
-]
-
-const tBlock = [
-    [0, 3, 0],
-    [3, 3, 3],
-    [0, 0, 0]
-]
-
-const sBlock = [
-    [0, 4, 4],
-    [4, 4, 0],
-    [0, 0, 0]
-]
-
-const zBlock = [
-    [5, 5, 0],
-    [0, 5, 5],
-    [0, 0, 0]
-]
-
-const lBlock = [
-    [0, 0, 6],
-    [6, 6, 6],
-    [0, 0, 0]
-]
-
-const jBlock = [
-    [7, 0, 0],
-    [7, 7, 7],
-    [0, 0, 0]
-]
-
-const iKickTable = [
-    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 2, y: 1}, {x: -1, y: -2}], //0->R
-    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 1, y: 2}, {x: -2, y: -1}], //R->0
-    [{x: 0, y: 0}, {x: 0, y: -1}, {x: 0, y: 2}, {x: 2, y: -1}, {x: -1, y: 2}], //R->2
-    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 1, y: -2}, {x: -1, y: 1}], //2->R
-    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 1, y: 2}, {x: -1, y: -1}], //2->L
-    [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: -2}, {x: 2, y: 1}, {x: -1, y: -2}], //L->2
-    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 1, y: -2}, {x: -2, y: 1}], //L->0
-    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 2, y: -1}, {x: -1, y: 2}]  //0->L
-];
-
-const otherKickTable = [
-    [{x: 0, y: 0}, {x: 0, y: -1}, {x: -1, y: -1}, {x: 2, y: 0}, {x: 2, y: -1}], // L->2 L->0 [Starts from L]
-    [{x: 0, y: 0}, {x: 0, y: 1}, {x: -1, y: 1}, {x: 2, y: 0}, {x: 2, y: 1}], // R->0 R->2 [Starts from R]
-    [{x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}, {x: -2, y: 0}, {x: -2, y: 1}], // 2->L 0->L [Ends in L]
-    [{x: 0, y: 0}, {x: 0, y: -1}, {x: 1, y: -1}, {x: -2, y: 0}, {x: -2, y: -1}] // 0->R 2->R [Ends in R]       
-];
-
-const BLOCKS = [ iBlock, oBlock, tBlock, sBlock, zBlock, lBlock, jBlock ]
-
-const BLOCK_ID = [ 0, 1, 2, 3, 4, 5, 6 ];
 
 const COLORS = [
     '#c23616',
@@ -101,17 +15,28 @@ const COLORS = [
     '#00cec9'
 ]
 
+import { getRotationResult } from './model/rotation.js';
+import { tryMove, moveTetromino } from './model/movement.js';
+import { findGhostPosition  } from './model/ghost.js';
+import { isValidPosition } from './model/helper.js'
+import { getNextTetromino, createTetromino } from './model/factory.js';
+
 export class GameModel {
     constructor() {
-        this.tetromino = null;
-        this.grid = null;
-        this.bag = null;
-        this.nextBlockId = null;
-        this.ghostX = null;
+        this.holdId = null;
+        this.hasSwapped = false;
     }
 
+    getSwapped() {
+        return this.hasSwapped;
+    }
+    
     setDrawCellCallback(callback) {
         this.drawCellCallback = callback;
+    }
+
+    setBag() {
+        this.bag = [];
     }
 
     getTetromino() {
@@ -126,46 +51,52 @@ export class GameModel {
         return this.ghostX;
     }
 
-    getNextTetromino() {
-        if(this.bag.length === 0){
-            this.blockBag = this.generateNewBag();
-        }
-        
-        this.nextBlockId = this.bag.pop();
+    hardDrop() {
+        this.tetromino.x = this.ghostX;
+    }
+    
+    getRotationResult(rotation) {
+        return getRotationResult(this.tetromino, rotation, this.grid);
     }
 
-    generateNewBag() {
-        this.bag = [...BLOCK_ID];
-        for (let i = this.bag.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [this.bag[i], this.bag[j]] = [this.bag[j], this.bag[i]];
-        }
+    tryMove(movement) {
+        return tryMove(this.tetromino, movement, this.grid);
+    }
+
+    moveTetromino(movement) {
+        moveTetromino(this.tetromino, movement);
+    }
+
+    findGhostPosition() {
+        this.ghostX = findGhostPosition(this.tetromino, this.grid);
+    }
+
+    isValidPosition() {
+        return isValidPosition(this.tetromino.x, this.tetromino.y, this.tetromino.block, this.grid);
+    }
+
+    getNextTetromino() {
+        this.nextBlockId = getNextTetromino(this.bag);
     }
 
     createTetromino() {
-        this.tetromino = {
-            block: JSON.parse(JSON.stringify(BLOCKS[this.nextBlockId])),
-            color: COLORS[this.nextBlockId],
-            x: START_X,
-
-            //Adjusts position for Square spawns
-            y: this.nextBlockId === SQUARE ? START_Y + SQUARE : START_Y,
-
-            //for wall kicks, blocks that are not line or square have same behaviour
-            kickId: this.nextBlockId > SQUARE ? OTHER : this.nextBlockId,
-            orientation: 0
-        }
-
+        this.tetromino = createTetromino(this.nextBlockId);
         this.getNextTetromino();
     }
 
-    calculateGhostX() {
-        this.ghostX = 0;
-        let newX = this.tetromino.x + this.ghostX;
-        while(this.isValidPosition(newX, this.tetromino.y)){
-            newX++;
+    swapTetromino() {
+        if(this.holdId === null) {
+            this.holdId = this.tetromino.blockId;
+            this.createTetromino();
+        } else {
+            this.tetromino, this.holdId = createTetromino(this.holdId), this.tetromino.blockId;
         }
-        this.ghostX = newX - 1;
+    
+        this.hasSwapped = true;
+    }
+
+    refreshSwap() {
+        this.hasSwapped = false;
     }
 
     createGrid(rows, cols){
@@ -230,200 +161,10 @@ export class GameModel {
         })
     }
 
-    tryMove(movement) {
-        let newX = this.tetromino.x;
-        let newY = this.tetromino.y;
-
-        switch(movement) {
-            case DOWN:
-                newX += 1;
-                break;
-            case LEFT:
-                newY -= 1;
-                break;
-            case RIGHT:
-                newY += 1;
-                break;
-        }
-
-        return this.isValidPosition(newX, newY);
-    }
-
-    tryRotate(rotation) {
-        let direction;
-        let cloneBlock = JSON.parse(JSON.stringify(this.tetromino.block));
-
-        this.transpose(cloneBlock);
-        if(rotation === CLOCKWISE) {
-            direction = ROTATE_RIGHT;
-            this.reverseRows(cloneBlock);
-        } else {
-            direction = ROTATE_LEFT;
-            this.reverseCols(cloneBlock);
-        }
-
-        let currentOrientation = this.tetromino.orientation;
-        let endOrientation = (currentOrientation + direction) % ORIENTATIONS;
-        let testId;
-        let result;
-        switch(this.tetromino.kickId) {
-            case LINE:
-                testId = this.getIBlockTest(currentOrientation, endOrientation);
-                result = this.runIBlockTest(testId, cloneBlock);
-                return {
-                    ...result,
-                    newOrientation: endOrientation
-                }
-            case SQUARE:
-                return {
-                    rotatable: false
-                }
-            case OTHER:
-                testId = this.getOtherBlockTest(currentOrientation, endOrientation);
-                result = this.runOtherBlockTest(testId, cloneBlock);
-                return {
-                    ...result,
-                    newOrientation: endOrientation
-                }
-        }
-    }
-
-    updateTetromino(result) {
-        this.tetromino.block = result.cloneBlock;
+    rotateTetromino(result) {
+        this.tetromino.block = result.rotatedBlock;
         this.tetromino.x = result.x;
         this.tetromino.y = result.y;
         this.tetromino.orientation = result.newOrientation;
-    }
-
-    runIBlockTest(testId, block){
-        let result = { rotatable: false };
-
-        iKickTable[testId].some(test => {
-            let newX = this.tetromino.x + test.x;
-            let newY = this.tetromino.y + test.y;
-            if(this.isValidPosition(newX, newY, block)) {
-                result = {
-                    rotatable: true,
-                    cloneBlock: block,
-                    x: newX,
-                    y: newY
-                };
-                
-                return true;
-            }
-
-            return false;
-        })
-
-        return result;
-    }
-
-    runOtherBlockTest(testId, block) {
-        let result = { rotatable: false };
-
-        otherKickTable[testId].some(test => {
-            let newX = this.tetromino.x + test.x;
-            let newY = this.tetromino.y + test.y;
-
-            if(this.isValidPosition(newX, newY, block)) {
-                result = {
-                    rotatable: true,
-                    cloneBlock: block,
-                    x: newX,
-                    y: newY
-                };
-                
-                return true;
-            }
-
-            return false;
-        })
-
-        return result;
-    }
-
-    getIBlockTest (currentOrientation, endOrientation){
-        if(currentOrientation === 0 && endOrientation === RIGHT_O){
-            return 0;
-        } else if(currentOrientation === RIGHT_O && endOrientation === START_O){
-            return 1;
-        } else if(currentOrientation === RIGHT_O && endOrientation === FLIP_O){
-            return 2;
-        } else if(currentOrientation === FLIP_O && endOrientation === RIGHT_O){
-            return 3;
-        } else if(currentOrientation === FLIP_O && endOrientation === LEFT_O){
-            return 4;
-        } else if(currentOrientation === LEFT_O && endOrientation === FLIP_O){
-            return 5;
-        } else if(currentOrientation === LEFT_O && endOrientation === START_O){
-            return 6;
-        } else {
-            return 7;
-        }
-    }
-
-    getOtherBlockTest(currentOrientation, endOrientation) {
-        if(currentOrientation === LEFT_O) {
-            return 0;
-        } else if(currentOrientation === RIGHT_O) {
-            return 1;
-        } else if(endOrientation === LEFT_O) {
-            return 2
-        } else {
-            return 3;
-        }
-    }
-
-    moveTetromino(direction) {
-        switch(direction) {
-            case UP:
-                this.tetromino.x -= 1;
-                break;
-            case DOWN:
-                this.tetromino.x += 1;
-                break;
-            case LEFT:
-                this.tetromino.y -= 1;
-                break;
-            case RIGHT:
-                this.tetromino.y += 1;
-                break;
-        }
-    }
-
-    isValidPosition(newX = this.tetromino.x, newY = this.tetromino.y, block = this.tetromino.block) {
-        return block.every((row, i) => {
-            return row.every((value, j) => {
-                let x = newX + i;
-                let y = newY + j;
-                if(x < 0) return true;
-                return value === 0 || this.inBoundary(x, y) && this.isEmpty(x, y);
-            })
-        })
-    }
-
-    inBoundary (x, y){
-        return x >= 0 && x < HEIGHT && y >= 0 && y < WIDTH;
-    }
-    
-    isEmpty(x, y) {
-        return this.grid[x][y].value === 0;
-    }
-
-    transpose(block) {
-        for (let i = 0; i < block.length; i++) {
-            for (let j = 0; j < i; j++) {
-                // Swap the elements across the diagonal
-                [block[i][j], block[j][i]] = [block[j][i], block[i][j]];
-            }
-        }
-    }
-    
-    reverseRows(block) {
-        block.forEach(row => row.reverse())
-    }
-    
-    reverseCols(block) {
-        block.reverse();
     }
 }
