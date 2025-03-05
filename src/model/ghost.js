@@ -1,9 +1,10 @@
 import { isValidPosition } from './helper.js';
 
 export function findGhostPosition(tetromino, grid) {
-    let ghostX = tetromino.x;
-    while(isValidPosition(ghostX, tetromino.y, tetromino.block, grid)){
-        ghostX++;
+    let ghostY = tetromino.y;
+    while(isValidPosition(tetromino.x, ghostY, tetromino.block, grid)){
+        ghostY++;
     }
-    return ghostX - 1;
+    
+    return ghostY - 1;
 }

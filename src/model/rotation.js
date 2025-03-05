@@ -1,34 +1,8 @@
-const CLOCKWISE = 'CLOCKWISE';
-
-const ORIENTATIONS = 4;
-const START_O = 0;
-const RIGHT_O = 1;
-const FLIP_O = 2;
-const LEFT_O = 3;
-
-const ROTATE_RIGHT = 1;
-const ROTATE_LEFT = -1;
-
-const SQUARE = 0;
-const LINE = 1;
-
-const iKickTable = [
-    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 2, y: 1}, {x: -1, y: -2}], //0->R
-    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 1, y: 2}, {x: -2, y: -1}], //R->0
-    [{x: 0, y: 0}, {x: 0, y: -1}, {x: 0, y: 2}, {x: 2, y: -1}, {x: -1, y: 2}], //R->2
-    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 1, y: -2}, {x: -1, y: 1}], //2->R
-    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 1, y: 2}, {x: -1, y: -1}], //2->L
-    [{x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: -2}, {x: 2, y: 1}, {x: -1, y: -2}], //L->2
-    [{x: 0, y: 0}, {x: 0, y: -2}, {x: 0, y: 1}, {x: 1, y: -2}, {x: -2, y: 1}], //L->0
-    [{x: 0, y: 0}, {x: 0, y: 2}, {x: 0, y: -1}, {x: 2, y: -1}, {x: -1, y: 2}]  //0->L
-];
-
-const otherKickTable = [
-    [{x: 0, y: 0}, {x: 0, y: -1}, {x: -1, y: -1}, {x: 2, y: 0}, {x: 2, y: -1}], // L->2 L->0 [Starts from L]
-    [{x: 0, y: 0}, {x: 0, y: 1}, {x: -1, y: 1}, {x: 2, y: 0}, {x: 2, y: 1}], // R->0 R->2 [Starts from R]
-    [{x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}, {x: -2, y: 0}, {x: -2, y: 1}], // 2->L 0->L [Ends in L]
-    [{x: 0, y: 0}, {x: 0, y: -1}, {x: 1, y: -1}, {x: -2, y: 0}, {x: -2, y: -1}] // 0->R 2->R [Ends in R]       
-];
+import { 
+        ORIENTATIONS, ORI, ROTATE,
+        CLOCKWISE, SQUARE, LINE, 
+        I_KICK_TABLE, OTHER_KICK_TABLE 
+    } from './constants.js'
 
 import { isValidPosition } from './helper.js';
 
@@ -46,11 +20,12 @@ export function getRotationResult(tetromino, rotation, grid) {
     let kickTable;
     if(blockId === LINE) {
         kickTestId = getIBlockTests(orientation, endOrientation);
-        kickTable = iKickTable;
+        kickTable = I_KICK_TABLE;
     } else {
         kickTestId = getOtherBlockTests(orientation, endOrientation);
-        kickTable = otherKickTable;
+        kickTable = OTHER_KICK_TABLE;
     }
+
     let result = runKickTests(kickTestId, tetromino, rotatedBlock, grid, kickTable);
     return { ...result, newOrientation: endOrientation }
 }
@@ -75,35 +50,36 @@ function reverse(rotation, block) {
     else
         block.reverse();
 }
+
 function getDirection(rotation) {
-    return rotation === CLOCKWISE ? ROTATE_RIGHT : ROTATE_LEFT;
+    return rotation === CLOCKWISE ? ROTATE.RIGHT : ROTATE.LEFT;
 }
 
 function getIBlockTests(current, end){
-    if(current === 0 && end === RIGHT_O)
+    if(current === 0 && end === ORI.RIGHT)
         return 0;
-    else if(current === RIGHT_O && end === START_O)
+    else if(current === ORI.RIGHT && end === ORI.START)
         return 1;
-    else if(current === RIGHT_O && end === FLIP_O)
+    else if(current === ORI.RIGHT && end === ORI.FLIP)
         return 2;
-    else if(current === FLIP_O && end === RIGHT_O)
+    else if(current === ORI.FLIP && end === ORI.RIGHT)
         return 3;
-    else if(current === FLIP_O && end === LEFT_O)
+    else if(current === ORI.FLIP && end === ORI.LEFT)
         return 4;
-    else if(current === LEFT_O && end === FLIP_O)
+    else if(current === ORI.LEFT && end === ORI.FLIP)
         return 5;
-    else if(current === LEFT_O && end === START_O)
+    else if(current === ORI.LEFT && end === ORI.START)
         return 6;
     else
         return 7;
 }
 
 function getOtherBlockTests(current, end) {
-    if(current === LEFT_O)
+    if(current === ORI.LEFT)
         return 0;
-    else if(current === RIGHT_O)
+    else if(current === ORI.RIGHT)
         return 1;
-    else if(end === LEFT_O)
+    else if(end === ORI.LEFT)
         return 2
     else
         return 3;
@@ -114,7 +90,7 @@ function runKickTests(testId, tetromino, block, grid, kickTable){
 
     kickTable[testId].some(test => {
         let newX = tetromino.x + test.x;
-        let newY = tetromino.y + test.y;
+        let newY = tetromino.y - test.y; // '-' because positive Y is downwards
         if(isValidPosition(newX, newY, block, grid)) {
             result = {
                 rotatable: true,
@@ -122,7 +98,7 @@ function runKickTests(testId, tetromino, block, grid, kickTable){
                 x: newX,
                 y: newY
             };
-            
+
             return true;
         }
 

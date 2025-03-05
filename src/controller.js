@@ -1,22 +1,10 @@
-const KEY = {
-    UP: 38,
-    DOWN: 40,
-    LEFT: 37,
-    RIGHT: 39,
-    SPACE: 32,
-    C_ROTATE: 67,
-    HELP: 72, //H-key
-    PAUSE: 80, //P-key
-    STORE: 83, //S-key
-    TOGGLE: 84, //T-key
-}
+import { KEY, DRAW, CLEAR } from "./model/constants";
 
-const INTERVAL = 2000;
 export class GameController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
-        this.gameInterval = null;
+        this.dropInterval = null;
 
         this.model.setDrawCellCallback((color, index) => {
             this.view.drawCell(color, index);
@@ -26,17 +14,43 @@ export class GameController {
     }
     
     startGame() {
-        this.model.createGrid(20, 10);
-        this.model.setBag()
+        this.model.createGrid();
+
+        this.model.resetScore();
+        this.view.updateScore(this.model.getScore());
+
+        this.model.resetLinesCleared();
+
+        this.model.updateLevel();
+        this.view.updateLevel(this.model.getLevel());
+
+        this.model.resetBag()
         this.model.getNextTetromino();
         this.model.createTetromino();
-        this.model.findGhostPosition();
-        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        this.gameInterval = setInterval(() => {this.gameLoop()}, INTERVAL);
+
+        this.model.resetHoldId();
+        this.model.resetSwap();
+        //draw next block
+        //draw held block
+        this.drawGhostAndTetromino();
+
+        this.model.updateLastMoveTime();
+        this.updateDropTime();
     }
 
-    stopGame() {
-        clearInterval(this.gameInterval);
+    updateDropTime(interval = 1000) {
+        if (!this.dropInterval) {
+            this.dropInterval = setInterval(() => {
+                this.gameLoop();
+            }, interval);
+        }
+    }
+
+    stopDrop() {
+        if(this.dropInterval) {
+            clearInterval(this.dropInterval);
+            this.lockInterval = null;
+        }
     }
 
     handleKeyPress(event) {
@@ -81,91 +95,83 @@ export class GameController {
 
     handleMovement(movement) {
         if(!this.model.tryMove(movement)) return;
-        this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        this.model.moveTetromino(movement);
-        this.model.findGhostPosition();
-        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
+        if(movement !== 'DOWN')
+            this.model.updateLastMoveTime()
+
+        this.yerp(() => this.model.moveTetromino(movement));
     }
 
     handleRotation(rotation) {
         let result = this.model.getRotationResult(rotation);
         if(!result.rotatable) return;
-        this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        this.model.rotateTetromino(result);
-        this.model.findGhostPosition();
-        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
+        this.model.updateLastMoveTime()
+
+        this.yerp(() => this.model.rotateTetromino(result));
     }
 
     handleHardDrop() {
-        this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        this.model.hardDrop();
-        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
+        
+        this.yerp(() => this.model.hardDrop());
 
-        this.model.updateGrid();
-        this.model.checkRows();
-        this.model.createTetromino();
-        this.model.refreshSwap();
+        this.papasha();
 
-        if(this.model.isValidPosition()) {
-            this.model.findGhostPosition();
-            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        } else if(this.model.tryMove('UP')){
-            console.log("hey");
-            this.model.moveTetromino('UP');
-            this.model.findGhostPosition();
-            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        } else {
-            console.log("GAME OVER");
-            this.model.moveTetromino('UP');
-            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-            this.stopGame();
-        }
+        this.checkGameOver();
     }
     
-    handleSwap() {
-        if(this.model.getSwapped()) return;
+    yerp(action) {
+        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostY(), CLEAR);
+        action();
+        this.drawGhostAndTetromino();
+    }
 
-        this.view.clearTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        this.model.swapTetromino();
+    handleSwap() {
+        if(this.model.isSwapped()) return;
+
+        this.yerp(() => this.model.swapTetromino());
+        
         //draw held item
-        if(this.model.isValidPosition()) {
-            this.model.findGhostPosition();
-            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        } else if(this.model.tryMove('UP')){
-            this.model.moveTetromino('UP');
-            this.model.findGhostPosition();
-            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-        } else {
-            console.log("GAME OVER");
-            this.model.moveTetromino('UP');
-            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-            this.stopGame();
-        }
+        this.checkGameOver();
     }
 
     gameLoop() {
         if(this.model.tryMove('DOWN')){
             this.handleMovement('DOWN');
+        } else if(this.model.hasMovedRecently() && this.model.getLevel < 19) {
+            console.log("recently moved");
         } else {
-            this.model.updateGrid();
-            this.model.refreshSwap();
-            this.model.checkRows();
-            this.model.createTetromino();
+            this.papasha();
 
-            if(this.model.isValidPosition()) {
-                this.model.findGhostPosition();
-                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-            } else if(this.model.tryMove('UP')){
-                this.model.moveTetromino('UP');
-                this.model.findGhostPosition();
-                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-            } else {
-                console.log("GAME OVER");
-                this.model.moveTetromino('UP');
-                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostX());
-                this.stopGame();
-            }
-            
+            this.checkGameOver();
         }
+    }
+
+    papasha() {
+        this.model.updateGrid();
+        this.model.resetSwap();
+        this.model.clearRows();
+        this.view.updateScore(this.model.getScore());
+        this.view.updateLevel(this.model.getLevel());
+        this.updateDropTime();
+        this.model.createTetromino();
+        //Draw next block
+    }
+
+    checkGameOver() {
+        if(this.model.isValidPosition()) {
+            this.drawGhostAndTetromino();
+        } else if(this.model.tryMove('UP')){
+            this.model.moveTetromino('UP');
+            this.drawGhostAndTetromino();
+        } else {
+            console.log("GAME OVER");
+            this.model.moveTetromino('UP');
+            this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getTetromino().y, DRAW);
+            this.stopDrop(); 
+        }
+    }
+
+    drawGhostAndTetromino() {
+        this.model.findGhostPosition();
+        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostY(), DRAW);
     }
 }

@@ -1,8 +1,4 @@
-const UP = 'UP';
-const LEFT = 'LEFT';
-const RIGHT = 'RIGHT';
-const DOWN = 'DOWN';
-
+import { MOVEMENT } from './constants.js';
 import { isValidPosition } from './helper.js';
 
 export function tryMove(tetromino, movement, grid) {
@@ -10,16 +6,17 @@ export function tryMove(tetromino, movement, grid) {
     let newY = tetromino.y;
 
     switch(movement) {
-        case UP:
-            newX -= 1;
-        case DOWN:
-            newX += 1;
-            break;
-        case LEFT:
+        case MOVEMENT.UP:
             newY -= 1;
             break;
-        case RIGHT:
+        case MOVEMENT.DOWN:
             newY += 1;
+            break;
+        case MOVEMENT.LEFT:
+            newX -= 1;
+            break;
+        case MOVEMENT.RIGHT:
+            newX += 1;
             break;
     }
 
@@ -28,17 +25,18 @@ export function tryMove(tetromino, movement, grid) {
 
 export function moveTetromino(tetromino, direction) {
     switch(direction) {
-        case UP:
-            tetromino.x -= 1;
-            break;
-        case DOWN:
-            tetromino.x += 1;
-            break;
-        case LEFT:
+        case MOVEMENT.UP:
             tetromino.y -= 1;
             break;
-        case RIGHT:
+        case MOVEMENT.DOWN:
             tetromino.y += 1;
             break;
+        case MOVEMENT.LEFT:
+            tetromino.x -= 1;
+            break;
+        case MOVEMENT.RIGHT:
+            tetromino.x += 1;
+            break;
+        
     }
 }
