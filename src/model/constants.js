@@ -15,6 +15,8 @@ export const KEY = {
 export const DRAW = 'DRAW';
 export const CLEAR = 'CLEAR';
 
+export const LOCK_DELAY = 500;
+
 /* ---- Model Contants ---- */
 export const SCORES = [0, 100, 300, 500, 800];
 

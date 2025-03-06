@@ -1,4 +1,4 @@
-import { SCORES, LINES_PER_LEVEL} from "./model/constants"
+import { SCORES, LINES_PER_LEVEL, LOCK_DELAY} from "./model/constants"
 
 import { getRotationResult } from './model/rotation.js';
 import { tryMove, moveTetromino } from './model/movement.js';
@@ -7,8 +7,6 @@ import { isValidPosition } from './model/helper.js'
 import { getNextTetromino, createTetromino } from './model/factory.js';
 import { createGrid, updateGrid } from './model/grid.js';
 import { clearRows } from './model/line_clear.js';
-
-const LOCK_INTERVAL = 500;
 
 export class GameModel {
     /* Grid Functions */
@@ -161,7 +159,7 @@ export class GameModel {
     getActionCount() {
         return this.actionCount;
     }
-    
+
     increaseActionCount() {
         this.actionCount++;
     }
@@ -171,7 +169,7 @@ export class GameModel {
 
     hasMovedRecently() {
         const currentTime = Date.now();
-        return currentTime - this.lastMoveTime <= LOCK_INTERVAL;
+        return currentTime - this.lastMoveTime <= LOCK_DELAY;
     }
 
     /* Other Functions */

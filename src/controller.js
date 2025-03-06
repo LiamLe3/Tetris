@@ -1,13 +1,10 @@
-import { KEY, DRAW, CLEAR, MOVEMENT } from "./model/constants";
+import { KEY, DRAW, CLEAR, MOVEMENT, LOCK_DELAY } from "./model/constants";
 
-const LOCK_DELAY = 500;
 export class GameController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
         this.dropInterval = null;
-        this.lastMoveTime = 0;
-        this.isLocking = false;
 
         this.model.setDrawCellCallback((color, index) => {
             this.view.drawCell(color, index);
@@ -142,7 +139,6 @@ export class GameController {
         
         if(this.model.tryMove(MOVEMENT.DOWN)){
             this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
-            this.isLocking = false;
         } else if(this.model.hasMovedRecently() && this.model.getActionCount() <= 20) {
             this.stopDrop();
             if (!this.dropInterval) {
