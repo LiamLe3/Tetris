@@ -1,10 +1,13 @@
-import { KEY, DRAW, CLEAR } from "./model/constants";
+import { KEY, DRAW, CLEAR, MOVEMENT } from "./model/constants";
 
+const LOCK_DELAY = 500;
 export class GameController {
     constructor(model, view) {
         this.model = model;
         this.view = view;
         this.dropInterval = null;
+        this.lastMoveTime = 0;
+        this.isLocking = false;
 
         this.model.setDrawCellCallback((color, index) => {
             this.view.drawCell(color, index);
@@ -28,6 +31,7 @@ export class GameController {
         this.model.getNextTetromino();
         this.model.createTetromino();
 
+        this.model.resetActionCount();
         this.model.resetHoldId();
         this.model.resetSwap();
         //draw next block
@@ -38,18 +42,18 @@ export class GameController {
         this.updateDropTime();
     }
 
-    updateDropTime(interval = 1000) {
+    updateDropTime() {
         if (!this.dropInterval) {
             this.dropInterval = setInterval(() => {
                 this.gameLoop();
-            }, interval);
+            }, this.model.getSpeed());
         }
     }
 
     stopDrop() {
         if(this.dropInterval) {
             clearInterval(this.dropInterval);
-            this.lockInterval = null;
+            this.dropInterval = null;
         }
     }
 
@@ -93,78 +97,100 @@ export class GameController {
 
     }
 
+    performAction(action) {
+        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostY(), CLEAR);
+        action();
+        this.drawGhostAndTetromino();
+    }
+
     handleMovement(movement) {
         if(!this.model.tryMove(movement)) return;
-        if(movement !== 'DOWN')
-            this.model.updateLastMoveTime()
+        this.model.updateLastMoveTime()
+        this.model.increaseActionCount();
 
-        this.yerp(() => this.model.moveTetromino(movement));
+        this.performAction(() => this.model.moveTetromino(movement));
     }
 
     handleRotation(rotation) {
         let result = this.model.getRotationResult(rotation);
         if(!result.rotatable) return;
         this.model.updateLastMoveTime()
+        this.model.increaseActionCount();
 
-        this.yerp(() => this.model.rotateTetromino(result));
+        this.performAction(() => this.model.rotateTetromino(result));
     }
 
     handleHardDrop() {
-        
-        this.yerp(() => this.model.hardDrop());
 
-        this.papasha();
+        this.performAction(() => this.model.hardDrop());
+
+        this.lockTetromino();
 
         this.checkGameOver();
-    }
-    
-    yerp(action) {
-        this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostY(), CLEAR);
-        action();
-        this.drawGhostAndTetromino();
     }
 
     handleSwap() {
         if(this.model.isSwapped()) return;
 
-        this.yerp(() => this.model.swapTetromino());
+        this.performAction(() => this.model.swapTetromino());
         
         //draw held item
         this.checkGameOver();
     }
 
     gameLoop() {
-        if(this.model.tryMove('DOWN')){
-            this.handleMovement('DOWN');
-        } else if(this.model.hasMovedRecently() && this.model.getLevel < 19) {
-            console.log("recently moved");
+        
+        if(this.model.tryMove(MOVEMENT.DOWN)){
+            this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
+            this.isLocking = false;
+        } else if(this.model.hasMovedRecently() && this.model.getActionCount() <= 20) {
+            this.stopDrop();
+            if (!this.dropInterval) {
+                this.dropInterval = setInterval(() => {
+                    this.graceLoop();
+                }, 500);
+            }
         } else {
-            this.papasha();
-
+            this.lockTetromino();
+            this.checkGameOver();
+        }
+    }
+    
+    graceLoop() {
+        if(this.model.tryMove(MOVEMENT.DOWN)) {
+            this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
+            this.stopDrop();
+            this.updateDropTime();
+        } else if(!this.model.hasMovedRecently() || this.model.getActionCount() > 20) {
+            this.stopDrop();
+            this.updateDropTime();
+            this.lockTetromino();
             this.checkGameOver();
         }
     }
 
-    papasha() {
+    lockTetromino() {
         this.model.updateGrid();
         this.model.resetSwap();
         this.model.clearRows();
         this.view.updateScore(this.model.getScore());
         this.view.updateLevel(this.model.getLevel());
+        this.stopDrop();
         this.updateDropTime();
         this.model.createTetromino();
+        this.model.resetActionCount();
         //Draw next block
     }
 
     checkGameOver() {
         if(this.model.isValidPosition()) {
             this.drawGhostAndTetromino();
-        } else if(this.model.tryMove('UP')){
-            this.model.moveTetromino('UP');
+        } else if(this.model.tryMove(MOVEMENT.UP)){
+            this.model.moveTetromino(MOVEMENT.UP);
             this.drawGhostAndTetromino();
         } else {
             console.log("GAME OVER");
-            this.model.moveTetromino('UP');
+            this.model.moveTetromino(MOVEMENT.UP);
             this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getTetromino().y, DRAW);
             this.stopDrop(); 
         }

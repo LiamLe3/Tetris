@@ -8,6 +8,8 @@ import { getNextTetromino, createTetromino } from './model/factory.js';
 import { createGrid, updateGrid } from './model/grid.js';
 import { clearRows } from './model/line_clear.js';
 
+const LOCK_INTERVAL = 500;
+
 export class GameModel {
     /* Grid Functions */
     createGrid() {
@@ -152,13 +154,24 @@ export class GameModel {
     }
 
     /* Lock Down */
+    resetActionCount() {
+        this.actionCount = 0;
+    }
+
+    getActionCount() {
+        return this.actionCount;
+    }
+    
+    increaseActionCount() {
+        this.actionCount++;
+    }
     updateLastMoveTime() {
         this.lastMoveTime = Date.now();
     }
 
     hasMovedRecently() {
         const currentTime = Date.now();
-        return currentTime - this.lastMoveTime <= this.moveInterval;
+        return currentTime - this.lastMoveTime <= LOCK_INTERVAL;
     }
 
     /* Other Functions */
