@@ -3,6 +3,8 @@ export class GameView {
         this.field = document.getElementsByClassName('block');
         this.viewScore = document.querySelector('#score');
         this.level = document.querySelector('#level');
+        this.holdblock = document.querySelector('hold-block');
+        this.nextBlock = document.querySelector('next-block');
     }
 
     updateScore(score) {
@@ -13,11 +15,11 @@ export class GameView {
         this.viewScore.innerHTML = 'LV. ' + level;
     }
 
-    displayNextBlock() {
+    displayHoldBlock(holdBlockId) {
 
     }
 
-    displayHeldBlock() {
+    displayNextBlock(nextBlockId) {
 
     }
 

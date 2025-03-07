@@ -1,12 +1,13 @@
 import { SCORES, LINES_PER_LEVEL, LOCK_DELAY} from "./model/constants"
 
-import { getRotationResult } from './model/rotation.js';
-import { tryMove, moveTetromino } from './model/movement.js';
-import { findGhostPosition  } from './model/ghost.js';
-import { isValidPosition } from './model/helper.js'
-import { getNextTetromino, createTetromino } from './model/factory.js';
 import { createGrid, updateGrid } from './model/grid.js';
 import { clearRows } from './model/line_clear.js';
+import { getNextTetromino, createTetromino } from './model/factory.js';
+import { tryMove, moveTetromino } from './model/movement.js';
+import { getRotationResult } from './model/rotation.js';
+import { findGhostPosition  } from './model/ghost.js';
+import { isValidPosition } from './model/helper.js';
+
 
 export class GameModel {
     /* Grid Functions */
@@ -91,6 +92,9 @@ export class GameModel {
         this.nextBlockId = getNextTetromino(this.bag);
     }
 
+    getNextId() {
+        return this.nextBlockId;
+    }
 
     /* Movement */
     tryMove(movement) {
@@ -129,6 +133,10 @@ export class GameModel {
     /* Swap && Hold Block */
     resetHoldId() {
         this.holdId = null;
+    }
+
+    getHoldId() {
+        return this.holdId;
     }
 
     resetSwap() {

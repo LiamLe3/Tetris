@@ -31,15 +31,16 @@ export class GameController {
         this.model.resetActionCount();
         this.model.resetHoldId();
         this.model.resetSwap();
-        //draw next block
-        //draw held block
+        
+        this.view.displayHoldBlock(this.model.getHoldId());
+        this.view.displayNextBlock(this.model.getNextId());
         this.drawGhostAndTetromino();
 
         this.model.updateLastMoveTime();
-        this.updateDropTime();
+        this.updateDropInterval();
     }
 
-    updateDropTime() {
+    updateDropInterval() {
         if (!this.dropInterval) {
             this.dropInterval = setInterval(() => {
                 this.gameLoop();
@@ -47,7 +48,7 @@ export class GameController {
         }
     }
 
-    stopDrop() {
+    stopDropInterval() {
         if(this.dropInterval) {
             clearInterval(this.dropInterval);
             this.dropInterval = null;
@@ -131,7 +132,7 @@ export class GameController {
 
         this.performAction(() => this.model.swapTetromino());
         
-        //draw held item
+        this.view.displayHoldBlock(this.model.getHoldId());
         this.checkGameOver();
     }
 
@@ -140,11 +141,11 @@ export class GameController {
         if(this.model.tryMove(MOVEMENT.DOWN)){
             this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
         } else if(this.model.hasMovedRecently() && this.model.getActionCount() <= 20) {
-            this.stopDrop();
+            this.stopDropInterval();
             if (!this.dropInterval) {
                 this.dropInterval = setInterval(() => {
                     this.graceLoop();
-                }, 500);
+                }, LOCK_DELAY);
             }
         } else {
             this.lockTetromino();
@@ -155,11 +156,11 @@ export class GameController {
     graceLoop() {
         if(this.model.tryMove(MOVEMENT.DOWN)) {
             this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
-            this.stopDrop();
-            this.updateDropTime();
+            this.stopDropInterval();
+            this.updateDropInterval();
         } else if(!this.model.hasMovedRecently() || this.model.getActionCount() > 20) {
-            this.stopDrop();
-            this.updateDropTime();
+            this.stopDropInterval();
+            this.updateDropInterval();
             this.lockTetromino();
             this.checkGameOver();
         }
@@ -171,11 +172,11 @@ export class GameController {
         this.model.clearRows();
         this.view.updateScore(this.model.getScore());
         this.view.updateLevel(this.model.getLevel());
-        this.stopDrop();
-        this.updateDropTime();
+        this.stopDropInterval();
+        this.updateDropInterval();
         this.model.createTetromino();
         this.model.resetActionCount();
-        //Draw next block
+        this.view.displayNextBlock(this.model.getNextId());
     }
 
     checkGameOver() {
@@ -188,7 +189,7 @@ export class GameController {
             console.log("GAME OVER");
             this.model.moveTetromino(MOVEMENT.UP);
             this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getTetromino().y, DRAW);
-            this.stopDrop(); 
+            this.stopDropInterval(); 
         }
     }
 

@@ -56,7 +56,7 @@ export const ORI = {
     LEFT: 3
 }
 
-// Kicktable '+' X is rightwards, '+' Y is upwards
+// Kicktable --- '+' X is rightwards, '+' Y is upwards
 export const I_KICK_TABLE = [
     [{x: 0, y: 0}, {x: -2, y: 0}, {x: 1, y: 0}, {x: 1, y: 2}, {x: -2, y: -1}], //0->R
     [{x: 0, y: 0}, {x: 2, y: 0}, {x: -1, y: 0}, {x: 2, y: 1}, {x: -1, y: -2}], //R->0
