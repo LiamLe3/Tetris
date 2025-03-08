@@ -20,7 +20,7 @@ function generateNewBag(bag) {
     return bag
 }
 
-// Factory function for block information
+// Factory function for tetromino information
 export function createTetromino(nextBlockId) {
     return {
         block: JSON.parse(JSON.stringify(BLOCKS[nextBlockId])),
