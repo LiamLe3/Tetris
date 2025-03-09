@@ -3,30 +3,36 @@ export class GameView {
         this.field = document.getElementsByClassName('block');
         this.viewScore = document.querySelector('#score');
         this.level = document.querySelector('#level');
-        this.holdblock = document.querySelector('hold-block');
-        this.nextBlock = document.querySelector('next-block');
+        this.holdblock = document.querySelector('#hold-block');
+        this.nextBlock = document.querySelector('#next-block');
     }
 
+    // Updates the score in view
     updateScore(score) {
         this.viewScore.innerHTML = score;
     }
 
+    // Updates the level in view
     updateLevel(level) {
         this.viewScore.innerHTML = 'LV. ' + level;
     }
 
+    // Updates the current hold block
     displayHoldBlock(holdBlockId) {
 
     }
 
+    // Updates the next block
     displayNextBlock(nextBlockId) {
 
     }
 
+    // Used as a callback in clearRow in line_clear.js
     drawCell(color, index) {
         this.field[index].style.background = color;
     }
 
+    // Draws or clears the tetromino on the view board
     drawTetromino(tetromino, grid, ghostY, action) {
         tetromino.block.forEach((row, i) => {
             row.forEach((value, j) => {
