@@ -66,4 +66,19 @@ export class GameView {
             });
         });
     }
+
+    /* Other */
+    resetView(score, level, holdId, nextId) {
+        this.updateScore(score);
+        this.updateLevel(level);
+
+        this.displayHoldBlock(holdId);
+        this.displayNextBlock(nextId);
+    }
+
+    updateView() {
+        this.updateScore(this.model.getScore());
+        this.updateLevel(this.model.getLevel());
+        this.displayNextBlock(this.model.getNextId());
+    }
 }

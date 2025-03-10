@@ -168,7 +168,7 @@ export class GameModel {
     increaseActionCount() {
         this.actionCount++;
     }
-    
+
     updateLastMoveTime() {
         this.lastMoveTime = Date.now();
     }
@@ -185,5 +185,29 @@ export class GameModel {
 
     setDrawCellCallback(callback) {
         this.drawCellCallback = callback;
+    }
+
+    resetModel() {
+        this.createGrid();
+
+        this.resetScore();
+        this.resetLinesCleared();
+        this.updateLevel();
+
+        this.resetBag()
+        this.getNextTetromino();
+        this.createTetromino();
+
+        this.resetActionCount();
+        this.resetHoldId();
+        this.resetSwap();
+
+        this.updateLastMoveTime();
+    }
+
+    prepareNextTetromino() {
+        this.createTetromino();
+        this.resetActionCount();
+        this.resetSwap();
     }
 }

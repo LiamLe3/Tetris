@@ -13,7 +13,6 @@ export class GameController {
 
         this.attachKeyEventListeners();
         this.attachButtonEventListeners();
-
     }
 
     /* Event Listeners */
@@ -23,30 +22,29 @@ export class GameController {
         
             switch(event.key) {
                 case KEY.CLOCK:
-                    this.handleRotation(ROTATION.CLOCKWISE);
+                    this.rotateAction(ROTATION.CLOCKWISE);
                     break;
                 case KEY.ANTI:
-                    this.handleRotation(ROTATION.ANTI);
+                    this.rotateAction(ROTATION.ANTI);
                     break;
                 case KEY.DOWN:
-                    this.handleMovement(MOVEMENT.DOWN);
+                    this.moveAction(MOVEMENT.DOWN);
                     break;
                 case KEY.LEFT:
-                    this.handleMovement(MOVEMENT.LEFT);
+                    this.moveAction(MOVEMENT.LEFT);
                     break;
                 case KEY.RIGHT:
-                    this.handleMovement(MOVEMENT.RIGHT);
+                    this.moveAction(MOVEMENT.RIGHT);
                     break;
                 case KEY.SPACE:
-                    this.handleHardDrop();
+                    this.hardDropAction();
                     break;
                 case KEY.STORE:
-                    this.handleSwap();
+                    this.swapAction();
                     break;
             }
         
         })
-
     }
 
     attachButtonEventListeners() {
@@ -55,22 +53,22 @@ export class GameController {
             event.addEventListener('click', () => {
                 switch (id) {
                     case BUTTON.ROTATE:
-                        this.handleRotation(ROTATION.CLOCKWISE);
+                        this.rotateAction(ROTATION.CLOCKWISE);
                         break;
                     case BUTTON.LEFT:
-                        this.handleMovement(MOVEMENT.LEFT);
+                        this.moveAction(MOVEMENT.LEFT);
                         break;
                     case BUTTON.RIGHT:
-                        this.handleMovement(MOVEMENT.RIGHT);
+                        this.moveAction(MOVEMENT.RIGHT);
                         break;
                     case BUTTON.DOWN:
-                        this.handleMovement(MOVEMENT.DOWN);
+                        this.moveAction(MOVEMENT.DOWN);
                         break;
                     case BUTTON.DROP:
-                        this.handleHardDrop();
+                        this.hardDropAction();
                         break;
                     case BUTTON.STORE:
-                        this.handleSwap();
+                        this.swapAction();
                         break;
                 }
             })
@@ -79,36 +77,10 @@ export class GameController {
 
     /* Game Start */
     startGame() {
-        this.resetModel();
-        this.resetView();
-        this.updateDropInterval();
-    }
-
-    resetModel() {
-        this.model.createGrid();
-
-        this.model.resetScore();
-        this.model.resetLinesCleared();
-        this.model.updateLevel();
-
-        this.model.resetBag()
-        this.model.getNextTetromino();
-        this.model.createTetromino();
-
-        this.model.resetActionCount();
-        this.model.resetHoldId();
-        this.model.resetSwap();
-
-        this.model.updateLastMoveTime();
-    }
-
-    resetView() {
-        this.view.updateScore(this.model.getScore());
-        this.view.updateLevel(this.model.getLevel());
-
-        this.view.displayHoldBlock(this.model.getHoldId());
-        this.view.displayNextBlock(this.model.getNextId());
+        this.model.resetModel();
+        this.view.resetView(this.model.getScore(), this.model.getLevel(), this.model.getHoldId(), this.model.getNextId());
         this.drawGhostAndTetromino();
+        this.updateDropInterval();
     }
 
     /* Interval */
@@ -137,7 +109,7 @@ export class GameController {
         this.drawGhostAndTetromino();
     }
 
-    handleMovement(movement) {
+    moveAction(movement) {
         if(!this.model.tryMove(movement)) return;
         this.model.updateLastMoveTime()
         this.model.increaseActionCount();
@@ -145,7 +117,7 @@ export class GameController {
         this.performAction(() => this.model.moveTetromino(movement));
     }
 
-    handleRotation(rotation) {
+    rotateAction(rotation) {
         const result = this.model.getRotationResult(rotation);
         if(!result.rotatable) return;
         this.model.updateLastMoveTime()
@@ -154,13 +126,13 @@ export class GameController {
         this.performAction(() => this.model.rotateTetromino(result));
     }
 
-    handleHardDrop() {
+    hardDropAction() {
         this.performAction(() => this.model.hardDrop());
         this.lockTetromino();
         this.checkGameOver();
     }
 
-    handleSwap() {
+    swapAction() {
         if(this.model.isSwapped()) return;
         this.performAction(() => this.model.swapTetromino());
         this.view.displayHoldBlock(this.model.getHoldId());
@@ -196,27 +168,7 @@ export class GameController {
         }
     }
 
-    // Lock Tetromino
-    lockTetromino() {
-        this.model.updateGrid();
-        this.model.clearRows();
-        this.prepareNextTetromino();
-        this.updateView();
-    }
-
-    prepareNextTetromino() {
-        this.model.createTetromino();
-        this.model.resetActionCount();
-        this.model.resetSwap();
-        this.resetDropInterval();
-    }
-
-    updateView() {
-        this.view.updateScore(this.model.getScore());
-        this.view.updateLevel(this.model.getLevel());
-        this.view.displayNextBlock(this.model.getNextId());
-    }
-
+    /* Game Over */
     checkGameOver() {
         if(this.model.isValidPosition()) {
             this.drawGhostAndTetromino();
@@ -234,6 +186,15 @@ export class GameController {
     }
 
     /* Other */
+    // Lock Tetromino
+    lockTetromino() {
+        this.model.updateGrid();
+        this.model.clearRows();
+        this.model.prepareNextTetromino();
+        this.resetDropInterval();
+        this.view.updateView(this.model.getScore(), this.model.getLevel(), this.model.getNextId());
+    }
+
     drawGhostAndTetromino() {
         this.model.findGhostPosition();
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostY(), DRAW);
