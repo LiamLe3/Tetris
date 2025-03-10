@@ -1,25 +1,36 @@
-/* ---- Controller Constants ---- */
+/* Shared */
+export const LOCK_DELAY = 500;
+export const MAX_LEVEL = 20;
+export const EMPTY = 0;
+export const BOTTOM = 0;
+
+/* Controller Constants */
 export const KEY = {
-    UP: 38,
-    DOWN: 40,
-    LEFT: 37,
-    RIGHT: 39,
-    SPACE: 32,
-    C_ROTATE: 67,
-    HELP: 72, //H-key
-    PAUSE: 80, //P-key
-    STORE: 83, //S-key
-    TOGGLE: 84, //T-key
+    CLOCK: 'ArrowUp', // Clockwise Rotation
+    DOWN: 'ArrowDown',
+    LEFT: 'ArrowLeft',
+    RIGHT: 'ArrowRight',
+    SPACE: ' ',
+    ANTI: 'z',
+    STORE: 'c'
 }
 
+export const BUTTON = {
+    ROTATE: 'btn-rotate',
+    LEFT: 'btn-left',
+    RIGHT: 'btn-right',
+    DOWN: 'btn-down',
+    DROP: 'btn-drop',
+    STORE: 'btn-store'
+}
 export const DRAW = 'DRAW';
 export const CLEAR = 'CLEAR';
 
-export const LOCK_DELAY = 500;
+export const MAX_ACTION_COUNT = 20;
 
-/* ---- Model Contants ---- */
+/* Model Contants */
+// Other
 export const SCORES = [0, 100, 300, 500, 800];
-
 export const LINES_PER_LEVEL = 10;
 
 // Board dimensions
@@ -44,7 +55,10 @@ export const ROTATE = {
     LEFT: -1
 }
 
-export const CLOCKWISE = 'CLOCKWISE';
+export const ROTATION = {
+    CLOCKWISE: 'CLOCKWISE',
+    ANTI: 'ANTICLOCKWISE'
+}
 
 //Orientations
 export const ORIENTATIONS = 4;
@@ -138,6 +152,3 @@ const jBlock = [
 ]
 
 export const BLOCKS = [ oBlock, iBlock, tBlock, sBlock, zBlock, lBlock, jBlock ]
-
-// Values
-export const EMPTY = 0;

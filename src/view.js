@@ -1,3 +1,5 @@
+import { MAX_LEVEL, EMPTY, BOTTOM } from "./model/constants"
+
 export class GameView {
     constructor() {
         this.field = document.getElementsByClassName('block');
@@ -7,6 +9,7 @@ export class GameView {
         this.nextBlock = document.querySelector('#next-block');
     }
 
+    /* Info updates */
     // Updates the score in view
     updateScore(score) {
         this.viewScore.innerHTML = score;
@@ -14,8 +17,12 @@ export class GameView {
 
     // Updates the level in view
     updateLevel(level) {
-        this.viewScore.innerHTML = 'LV. ' + level;
+        if(level === MAX_LEVEL)
+            this.viewScore.innerHTML = 'LV. MAX'
+        else
+            this.viewScore.innerHTML = 'LV. ' + level;
     }
+
 
     // Updates the current hold block
     displayHoldBlock(holdBlockId) {
@@ -27,6 +34,8 @@ export class GameView {
 
     }
 
+
+    /* Drawing */
     // Used as a callback in clearRow in line_clear.js
     drawCell(color, index) {
         this.field[index].style.background = color;
@@ -41,7 +50,7 @@ export class GameView {
     
                 if (y < 0) return; // Prevent drawing/clearing above grid
     
-                if (value > 0) {
+                if (value > EMPTY) {
                     const ghostIndex = grid[ghostY + i][x].index;
                     const index = grid[y][x].index;
     

@@ -1,8 +1,8 @@
-import { BLOCKS, COLORS, BLOCK_ID, SQUARE, START_X, START_Y } from "./constants";
+import { BLOCKS, COLORS, BLOCK_ID, SQUARE, START_X, START_Y, EMPTY } from "./constants";
 
 // Returns a block in the bag, refreshes bag if it is empty
 export function getNextTetromino(bag) {
-    if(bag.length === 0){
+    if(bag.length === EMPTY){
         bag = generateNewBag(bag);
     }
     return bag.pop();

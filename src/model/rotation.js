@@ -1,6 +1,6 @@
 import { 
         ORIENTATIONS, ORI, ROTATE,
-        CLOCKWISE, SQUARE, LINE, 
+        ROTATION, SQUARE, LINE, 
         I_KICK_TABLE, OTHER_KICK_TABLE 
     } from './constants.js'
 
@@ -50,7 +50,7 @@ function transpose(block) {
 
 // Reverses the block matrix by row or column
 function reverse(rotation, block) {
-    if(rotation === CLOCKWISE)
+    if(rotation === ROTATION.CLOCKWISE)
         block.forEach(row => row.reverse());
     else
         block.reverse();
@@ -58,7 +58,7 @@ function reverse(rotation, block) {
 
 // Gets the direction of the rotation
 function getDirection(rotation) {
-    return rotation === CLOCKWISE ? ROTATE.RIGHT : ROTATE.LEFT;
+    return rotation === ROTATION.CLOCKWISE ? ROTATE.RIGHT : ROTATE.LEFT;
 }
 
 // Returns the test number for I blocks

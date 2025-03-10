@@ -112,18 +112,18 @@ html {
 }
 
 .btn {
-    background-color: var(--bg-color);
+    font-size: 30px;
     width: var(--button-size);
     height: var(--button-size);
     box-shadow: var(--button-shadow);
     border-radius: var(--button-border-radius);
     border: none;
     outline: none;
+    background-color: var(--bg-color);
     cursor: pointer;
-    font-size: 30px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
 .btn#btn-pause {
@@ -154,6 +154,15 @@ html {
 
 .other-control button {
     margin: 0 15px;
+}
+
+.control-section {
+    display: none;
+}
+
+.menu-section { 
+    position: absolute;
+    
 }
 
 @media only screen and (max-width: 425px) {

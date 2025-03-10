@@ -1,4 +1,4 @@
-import { SCORES, LINES_PER_LEVEL, LOCK_DELAY} from "./model/constants"
+import { SCORES, LINES_PER_LEVEL, LOCK_DELAY, MAX_LEVEL, BOTTOM } from "./model/constants"
 
 import { createGrid, updateGrid } from './model/grid.js';
 import { clearRows } from './model/line_clear.js';
@@ -34,11 +34,8 @@ export class GameModel {
     }
 
     addScore(count){
-        if (count >= 1 && count <= 4) {
-            this.score += SCORES[count];
-        } 
+        this.score += SCORES[count];
     }
-
 
     /* Lines Cleared Functions */
     resetLinesCleared() {
@@ -68,7 +65,7 @@ export class GameModel {
 
     updateLevel() {
         this.level = Math.floor(this.linesCleared / LINES_PER_LEVEL) + 1;
-        this.level = Math.min(this.level, 20);
+        this.level = Math.min(this.level, MAX_LEVEL);
     }
 
 
@@ -171,6 +168,7 @@ export class GameModel {
     increaseActionCount() {
         this.actionCount++;
     }
+    
     updateLastMoveTime() {
         this.lastMoveTime = Date.now();
     }
