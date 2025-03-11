@@ -63,7 +63,7 @@ function getDirection(rotation) {
 
 // Returns the test number for I blocks
 function getIBlockTests(current, end){
-    if(current === 0 && end === ORI.RIGHT)
+    if(current === ORI.START && end === ORI.RIGHT)
         return 0;
     else if(current === ORI.RIGHT && end === ORI.START)
         return 1;

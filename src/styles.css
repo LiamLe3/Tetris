@@ -58,7 +58,7 @@ html {
     position: relative;
     display: flex;
     justify-content: space-between;
-    padding: 20px 20px 0 20px;
+    padding: 20px 20px 10px 20px;
 }
 
 .held-item,
@@ -101,9 +101,11 @@ html {
 }
 
 .setting-section {
+    margin-top: auto;
     display: flex;
     justify-content: center;
-    padding: 15px;
+    align-items: end;
+    padding: 20px;
 }
 
 .setting-section button {
@@ -126,7 +128,7 @@ html {
     justify-content: center;
 }
 
-.btn#btn-pause {
+#btn-pause {
     font-size: 45px;
 }
 
@@ -161,8 +163,110 @@ html {
 }
 
 .menu-section { 
-    position: absolute;
-    
+    margin: auto 0;
+    position: relative;
+    text-align: center;
+    align-items: center;
+}
+
+.menu-title {
+    font-size: 60px;
+    font-weight: bold;
+    letter-spacing: -8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.menu-title span:nth-child(1) {
+    color: red;
+}
+
+.menu-title span:nth-child(2) {
+    color: blue;
+}
+
+.menu-title span:nth-child(3) {
+    color: green;
+}
+
+.menu-title span:nth-child(4) {
+    color: yellow;
+}
+
+.menu-title span:nth-child(5) {
+    color: purple;
+}
+
+.menu-title span:nth-child(6) {
+    color: pink;
+}
+
+.menu-status {
+    font-size: 40px;
+    margin-top: 10px;
+}
+
+.result {
+    margin-bottom: 40px;
+}
+
+.result h2 {
+    color: skyblue;
+    margin-top: 20px;
+    font-size: 30px;
+}
+
+.result p {
+    margin-top: 5px;
+    font-size: 30px;
+}
+
+.btn-width {
+    width: 200px;
+    margin: 30px auto;
+}
+
+/* State */
+.board-section,
+.info-section,
+.control-section,
+.menu-status,
+.result,
+#btn-new-game,
+#btn-pause {
+    display: none;
+}
+
+.play .board-section {
+    display: grid;
+}
+
+.play .info-section {
+    display: flex;
+}
+
+.play #btn-pause {
+    display: block;
+}
+
+.play .menu-section {
+    display: none;
+}
+
+.pause .gamestatus,
+.pause #btn-play,
+.pause #btn-new-game {
+    display: block;
+}
+
+.game-over .game-status,
+.game-over .result,
+.game-over #btn-new-game {
+    display: block;
+}
+
+.game-over #btn-play {
+    display: none;
 }
 
 @media only screen and (max-width: 425px) {

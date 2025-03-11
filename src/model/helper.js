@@ -1,4 +1,4 @@
-import { HEIGHT, WIDTH } from "./constants";
+import { HEIGHT, WIDTH, EMPTY } from "./constants";
 
 // Checks if the given tetromino position is valid
 export function isValidPosition(newX, newY, block, grid) {
@@ -7,7 +7,7 @@ export function isValidPosition(newX, newY, block, grid) {
             let x = newX + j;
             let y = newY + i;
             if(y < 0) return true; // ignores blocks above the grid
-            return value === 0 || inBoundary(x, y) && isEmpty(x, y, grid);
+            return value === EMPTY || inBoundary(x, y) && isEmpty(x, y, grid);
         })
     })
 }
@@ -19,5 +19,5 @@ function inBoundary (x, y){
 
 // Checks if the cell the tetromino is trying to move into is empty
 function isEmpty(x, y, grid) {
-    return grid[y][x].value === 0;
+    return grid[y][x].value === EMPTY;
 }

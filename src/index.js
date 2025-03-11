@@ -19,5 +19,3 @@ function createBoard(rows, cols, selector){
 let gameModel = new GameModel();
 let gameView = new GameView();
 let gameController = new GameController(gameModel, gameView);
-
-gameController.startGame();

@@ -29,7 +29,7 @@ function clearRow(index, grid, callback) {
             
             // Draw on view grid
             let value = grid[row][col].value;
-            let color = value === 0 ? TRANSPARENT : COLORS[value - 1];
+            let color = value === EMPTY ? TRANSPARENT : COLORS[value - 1];
             let cell_index = grid[row][col].index;
             callback(color, cell_index);
         }

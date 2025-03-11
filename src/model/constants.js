@@ -2,7 +2,6 @@
 export const LOCK_DELAY = 500;
 export const MAX_LEVEL = 20;
 export const EMPTY = 0;
-export const BOTTOM = 0;
 
 /* Controller Constants */
 export const KEY = {
@@ -21,7 +20,16 @@ export const BUTTON = {
     RIGHT: 'btn-right',
     DOWN: 'btn-down',
     DROP: 'btn-drop',
-    STORE: 'btn-store'
+    STORE: 'btn-store',
+    PLAY: 'btn-play',
+    PAUSE: 'btn-pause',
+    NEW_GAME: 'btn-new-game'
+}
+
+export const GAME_STATE = {
+    PLAY: 'PLAY',
+    PAUSE: 'PAUSE',
+    END: 'END'
 }
 export const DRAW = 'DRAW';
 export const CLEAR = 'CLEAR';

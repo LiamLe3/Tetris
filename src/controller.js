@@ -1,4 +1,4 @@
-import { KEY, BUTTON, DRAW, CLEAR, MOVEMENT, ROTATION, LOCK_DELAY, MAX_ACTION_COUNT } from "./model/constants";
+import { KEY, BUTTON, GAME_STATE, DRAW, CLEAR, MOVEMENT, ROTATION, LOCK_DELAY, MAX_ACTION_COUNT } from "./model/constants";
 
 export class GameController {
     constructor(model, view) {
@@ -70,6 +70,18 @@ export class GameController {
                     case BUTTON.STORE:
                         this.swapAction();
                         break;
+                    case BUTTON.PLAY:
+                        this.view.setGamePlay();
+                        this.gameState = GAME_STATE.PLAY;
+                        if(this.gameState === GAME_STATE.PAUSE){
+                            
+                        }
+                        this.startGame()
+                        break;
+                    case BUTTON.PAUSE:
+                        this.gameState = GAME_STATE.PAUSE;
+                        this.view.displayPause();
+                        break;
                 }
             })
         })
@@ -98,8 +110,8 @@ export class GameController {
     }
 
     resetDropInterval() {
-        this.updateDropInterval();
         this.stopDropInterval();
+        this.updateDropInterval();
     }
 
     /* Actions */
@@ -141,13 +153,15 @@ export class GameController {
 
     /* Gameplay Loop */
     gameLoop() {
-        if(this.model.tryMove(MOVEMENT.DOWN)){
-            this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
-        } else if(this.model.hasMovedRecently() && this.model.getActionCount() <= MAX_ACTION_COUNT) {
-            this.startGracePeriod();
-        } else {
-            this.lockTetromino();
-            this.checkGameOver();
+        if(this.gameState === GAME_STATE.PLAY){
+            if(this.model.tryMove(MOVEMENT.DOWN)){
+                this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
+            } else if(this.model.hasMovedRecently() && this.model.getActionCount() <= MAX_ACTION_COUNT) {
+                this.startGracePeriod();
+            } else {
+                this.lockTetromino();
+                this.checkGameOver();
+            }
         }
     }
     
@@ -178,15 +192,16 @@ export class GameController {
             if (this.model.tryMove(MOVEMENT.UP)){
                 this.drawGhostAndTetromino();
             } else {
-                console.log("GAME OVER");
-                this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getTetromino().y, DRAW);
-                this.stopDropInterval(); 
+                this.gameState = GAME_STATE.END;
+                this.stopDropInterval();
+                this.view.displayGameOver();
             }
         }
     }
 
+
+
     /* Other */
-    // Lock Tetromino
     lockTetromino() {
         this.model.updateGrid();
         this.model.clearRows();

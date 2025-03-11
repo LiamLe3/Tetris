@@ -1,28 +1,34 @@
-import { MAX_LEVEL, EMPTY, BOTTOM } from "./model/constants"
+import { MAX_LEVEL, EMPTY, GAME_STATE } from "./model/constants"
 
 export class GameView {
     constructor() {
-        this.field = document.getElementsByClassName('block');
-        this.viewScore = document.querySelector('#score');
-        this.level = document.querySelector('#level');
+        this.board = document.getElementsByClassName('block');
+        this.gameLevel = document.querySelector('#level');
+        this.gameScore = document.querySelector('#score');
         this.holdblock = document.querySelector('#hold-block');
         this.nextBlock = document.querySelector('#next-block');
+        
+        this.endLevel = document.querySelector('#result-level');
+        this.endLevel = document.querySelector('#result-score');
+
+        this.playButton = document.querySelector('#btn-play');
+
+        this.menuState = document.querySelector('body');
     }
 
     /* Info updates */
     // Updates the score in view
     updateScore(score) {
-        this.viewScore.innerHTML = score;
+        this.gameScore.innerHTML = score;
     }
 
     // Updates the level in view
     updateLevel(level) {
         if(level === MAX_LEVEL)
-            this.viewScore.innerHTML = 'LV. MAX'
+            this.gameLevel.innerHTML = 'LV. MAX'
         else
-            this.viewScore.innerHTML = 'LV. ' + level;
+            this.gameLevel.innerHTML = 'LV. ' + level;
     }
-
 
     // Updates the current hold block
     displayHoldBlock(holdBlockId) {
@@ -34,11 +40,24 @@ export class GameView {
 
     }
 
+    resetView(score, level, holdId, nextId) {
+        this.updateScore(score);
+        this.updateLevel(level);
+
+        this.displayHoldBlock(holdId);
+        this.displayNextBlock(nextId);
+    }
+
+    updateView(score, level, nextId) {
+        this.updateScore(score);
+        this.updateLevel(level);
+        this.displayNextBlock(nextId);
+    }
 
     /* Drawing */
     // Used as a callback in clearRow in line_clear.js
     drawCell(color, index) {
-        this.field[index].style.background = color;
+        this.board[index].style.background = color;
     }
 
     // Draws or clears the tetromino on the view board
@@ -56,29 +75,40 @@ export class GameView {
     
                     // Perform action (draw or clear)
                     if (action === 'DRAW') {
-                        this.field[ghostIndex].style.background = "grey";
-                        this.field[index].style.background = tetromino.color;
+                        this.board[ghostIndex].style.background = "grey";
+                        this.board[index].style.background = tetromino.color;
                     } else if (action === 'CLEAR') {
-                        this.field[ghostIndex].style.background = "transparent";
-                        this.field[index].style.background = "transparent";
+                        this.board[ghostIndex].style.background = "transparent";
+                        this.board[index].style.background = "transparent";
                     }
                 }
             });
         });
     }
 
-    /* Other */
-    resetView(score, level, holdId, nextId) {
-        this.updateScore(score);
-        this.updateLevel(level);
-
-        this.displayHoldBlock(holdId);
-        this.displayNextBlock(nextId);
+    /* Menu State */
+    displayGameOver(score, level) {
+        this.menuState.classList.add('game-over');
+        this.menuState.classList.remove('play');
+        this.endLevel.innerHTML = level;
+        this.endScore.innerHTML = score;
     }
 
-    updateView() {
-        this.updateScore(this.model.getScore());
-        this.updateLevel(this.model.getLevel());
-        this.displayNextBlock(this.model.getNextId());
+    displayPause() {
+        this.menuState.classList.add('pause');
+        this.menuState.classList.remove('play');
+        this.playButton.innerHTML = 'Resume';
+    }
+
+    displayGame() {
+        this.menuState.classList.add('play');
+    }
+
+    setGamePlay() {
+        this.menuState.classList.add('play');
+    }
+
+    resumeGame(){
+        this.menuState.classList.remove('pause');
     }
 }
