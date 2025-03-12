@@ -101,13 +101,13 @@ export const OTHER_KICK_TABLE = [
 export const TRANSPARENT = 'transparent';
 
 export const COLORS = [
-    '#c23616',
-    '#0097e6',
-    '#44bd32',
-    '#e1b12c',
-    '#8c7ae6',
-    '#e84393',
-    '#00cec9'
+    '#f9d308',
+    '#32c7ee',
+    '#a84b99',
+    '#43bb48',
+    '#f32028',
+    '#ed7923',
+    '#5865ac'
 ]
 
 // Block types
@@ -115,16 +115,16 @@ export const SQUARE = 0;
 export const LINE = 1;
 
 // Blocks
-export const BLOCK_ID = [ 0, 1, 2, 3, 4, 5, 6 ];
+export const BLOCK_ID = [ 0, 1, 2, 3, 4, 5, 6, 6 ];
 
 const oBlock = [
-    [2,2],
-    [2,2]
+    [1,1],
+    [1,1]
 ]
 
 const iBlock = [
     [0, 0, 0, 0],
-    [1, 1, 1, 1],
+    [2, 2, 2, 2],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
 ];

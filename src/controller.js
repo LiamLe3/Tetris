@@ -19,6 +19,9 @@ export class GameController {
     attachKeyEventListeners() {
         document.addEventListener('keydown', (event) => {
             event.preventDefault();
+            
+            if(this.gameState !== GAME_STATE.PLAY)
+                return;
         
             switch(event.key) {
                 case KEY.CLOCK:
@@ -72,15 +75,22 @@ export class GameController {
                         break;
                     case BUTTON.PLAY:
                         this.view.setGamePlay();
-                        this.gameState = GAME_STATE.PLAY;
                         if(this.gameState === GAME_STATE.PAUSE){
-                            
+                            this.gameState = GAME_STATE.PLAY;
+                            this.view.resumeGame();
+                            return;
                         }
+                        this.gameState = GAME_STATE.PLAY;
                         this.startGame()
                         break;
                     case BUTTON.PAUSE:
                         this.gameState = GAME_STATE.PAUSE;
                         this.view.displayPause();
+                        break;
+                    case BUTTON.NEW_GAME:
+                        this.gameState = GAME_STATE.PLAY;
+                        this.view.newGame();
+                        this.startGame();
                         break;
                 }
             })
@@ -187,14 +197,14 @@ export class GameController {
         if(this.model.isValidPosition()) {
             this.drawGhostAndTetromino();
         } else {
-            this.model.moveTetromino(MOVEMENT.UP);
 
             if (this.model.tryMove(MOVEMENT.UP)){
+                this.model.moveTetromino(MOVEMENT.UP);
                 this.drawGhostAndTetromino();
             } else {
                 this.gameState = GAME_STATE.END;
                 this.stopDropInterval();
-                this.view.displayGameOver();
+                this.view.displayGameOver(this.model.getScore(), this.model.getLevel());
             }
         }
     }

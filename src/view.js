@@ -1,19 +1,20 @@
-import { MAX_LEVEL, EMPTY, GAME_STATE } from "./model/constants"
+import { MAX_LEVEL, EMPTY } from "./model/constants"
 
 export class GameView {
     constructor() {
         this.board = document.getElementsByClassName('block');
-        this.gameLevel = document.querySelector('#level');
-        this.gameScore = document.querySelector('#score');
+        this.gameLevel = document.querySelector('#game-level');
+        this.gameScore = document.querySelector('#game-score');
         this.holdblock = document.querySelector('#hold-block');
         this.nextBlock = document.querySelector('#next-block');
         
         this.endLevel = document.querySelector('#result-level');
-        this.endLevel = document.querySelector('#result-score');
+        this.endScore = document.querySelector('#result-score');
 
         this.playButton = document.querySelector('#btn-play');
 
         this.menuState = document.querySelector('body');
+        this.menuStatus = document.querySelector('.menu-status');
     }
 
     /* Info updates */
@@ -92,12 +93,14 @@ export class GameView {
         this.menuState.classList.remove('play');
         this.endLevel.innerHTML = level;
         this.endScore.innerHTML = score;
+        this.menuStatus.innerHTML = 'GAME OVER'
     }
 
     displayPause() {
         this.menuState.classList.add('pause');
         this.menuState.classList.remove('play');
         this.playButton.innerHTML = 'Resume';
+        this.menuStatus.innerHTML = 'PAUSED'
     }
 
     displayGame() {
@@ -110,5 +113,18 @@ export class GameView {
 
     resumeGame(){
         this.menuState.classList.remove('pause');
+    }
+
+    newGame() {
+        this.menuState.classList.add('play');
+        this.menuState.classList.remove('pause');
+        this.menuState.classList.remove('game-over');
+        this.clearBoard();
+    }
+
+    clearBoard() {
+        [...this.board].forEach((block) => {
+            block.style.background = 'transparent';
+        });
     }
 }

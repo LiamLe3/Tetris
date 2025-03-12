@@ -1,9 +1,9 @@
 :root {
-    --bg-color: #ecf0f3;
-    --game-shadow: -10px 10px 20px #dbdfe2, 10px -10px 20px #fdffff;
-    --board-shadow-inset: inset -5px 5px 8px #d4d8db, inset 5px -5px 8px #ffffff;
-    --button-shadow: -5px 5px 10px #c4c7ca, 5px -5px 10px #ffffff;
-    --button-shadow-inset: inset -5px 5px 10px #c4c7ca, inset 5px -5px 10px #ffffff;
+    --bg-color: #38393b;
+    --game-shadow: -10px 10px 20px #202022, 10px -10px 20px #4b4d4f;
+    --board-shadow-inset: inset -5px 5px 8px #202022, inset 5px -5px 8px #4b4d4f;
+    --button-shadow: -5px 5px 10px #2e2e30, 5px -5px 10px #3e4042;
+    --button-shadow-inset: inset -5px 5px 10px #2e2e30, inset 5px -5px 10px #3e4042;
 
     --game-radius: 20px;
     --board-radius: 10px;
@@ -14,7 +14,8 @@
 
     --button-size: 50px;
     --button-border-radius: 25px;
-    --setting-button-color: skyblue;
+    --color-primary: #00ffee;
+    --color-secondary: #ffa0c1;
 }
 
 * {
@@ -25,10 +26,10 @@
 
 body,
 html {
-    font-family: 'Krona One', sans-serif;
+    font-family: sans-serif;
     height: 100vh;
     background-color: var(--bg-color);
-    overflow:hidden;
+    overflow: hidden;
     user-select: none;
 }
 
@@ -41,6 +42,7 @@ html {
 }
 
 .game-wrapper {
+    color: var(--color-primary);
     position: relative;
     width: 100%;
     max-width: var(--game-width);
@@ -61,13 +63,13 @@ html {
     padding: 20px 20px 10px 20px;
 }
 
-.held-item,
+.hold-item,
 .next-item {
     box-shadow: var(--board-shadow-inset);
     border-radius: var(--game-radius);
     width: var(--item-size);
     height: var(--item-size);
-    display:flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -81,7 +83,7 @@ html {
     font-size: 40px;
 }
 
-.info-item #level {
+.info-item #game-level {
     font-size: 20px;
 }
 
@@ -110,11 +112,13 @@ html {
 
 .setting-section button {
     margin: 0 10px;
-    color: var(--setting-button-color);
+    color: var(--color-secondary);
 }
 
 .btn {
     font-size: 30px;
+    font-weight: 700;
+    color: var(--color-primary);
     width: var(--button-size);
     height: var(--button-size);
     box-shadow: var(--button-shadow);
@@ -130,6 +134,7 @@ html {
 
 #btn-pause {
     font-size: 45px;
+    padding-top: 3px;
 }
 
 .btn:active {
@@ -138,10 +143,6 @@ html {
 
 .control-section {
     display: none;
-}
-
-.control-section button {
-    color: green;
 }
 
 .arrow-control {
@@ -177,29 +178,6 @@ html {
     text-align: center;
 }
 
-.menu-title span:nth-child(1) {
-    color: red;
-}
-
-.menu-title span:nth-child(2) {
-    color: blue;
-}
-
-.menu-title span:nth-child(3) {
-    color: green;
-}
-
-.menu-title span:nth-child(4) {
-    color: yellow;
-}
-
-.menu-title span:nth-child(5) {
-    color: purple;
-}
-
-.menu-title span:nth-child(6) {
-    color: pink;
-}
 
 .menu-status {
     font-size: 40px;
@@ -211,7 +189,7 @@ html {
 }
 
 .result h2 {
-    color: skyblue;
+    color: var(--color-secondary);
     margin-top: 20px;
     font-size: 30px;
 }
@@ -221,7 +199,7 @@ html {
     font-size: 30px;
 }
 
-.btn-width {
+.btn-wide {
     width: 200px;
     margin: 30px auto;
 }
@@ -253,13 +231,13 @@ html {
     display: none;
 }
 
-.pause .gamestatus,
+.pause .menu-status,
 .pause #btn-play,
 .pause #btn-new-game {
     display: block;
 }
 
-.game-over .game-status,
+.game-over .menu-status,
 .game-over .result,
 .game-over #btn-new-game {
     display: block;

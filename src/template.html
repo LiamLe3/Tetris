@@ -10,19 +10,7 @@
     <div class="container">
         <!-- GAME -->
         <div class="game-wrapper">
-            <div class="info-section">
-                <div class="held-item">
-                    <img id="hold-block">HELD</img>
-                </div>
-                <div class="info-item">
-                    <span id="score">12345</span>
-                    <span id="level">LV. 0</span>
-                </div>
-                <div class="next-item">
-                    <img id="next-block">NEXT</img>
-                </div>
-            </div>
-            <div class="board-section"></div>
+            
             <!-- MENU SECTION -->
             <div class="menu-section">
                 <div class="menu-title">
@@ -38,34 +26,50 @@
                 <div class="result">
                     <h2>Level</h2>
                     <p id="result-level">20</p>
-            
+                
                     <h2>Score</h2>
                     <p id="result-score">200</p>
                 </div>
-                            
-                <button class="btn btn-width" id="btn-play">Play</button>
-                <button class="btn btn-width" id="btn-new-game">New Game</button>
+
+                <button class="btn btn-wide" id="btn-play">Play</button>
+                <button class="btn btn-wide" id="btn-new-game">New Game</button>
             </div>
             <!-- END OF MENU SECTION -->
+
+            <!-- INFO/BOARD SECTION -->
+            <div class="info-section">
+                <div class="hold-item">
+                    <img id="hold-block">HELD</img>
+                </div>
+                <div class="info-item">
+                    <span id="game-score">12345</span>
+                    <span id="game-level">LV. 0</span>
+                </div>
+                <div class="next-item">
+                    <img id="next-block">NEXT</img>
+                </div>
+            </div>
+            
+            <div class="board-section"></div>
+            <!-- END OF INFO/BOARD SECTION -->
+
             <!-- SETTING SECTION -->
             <div class="setting-section">
                 <button class="btn" id="btn-pause">
                     <i class="bx bx-pause"></i>
-                </button>
-                <button class="btn" id="btn-theme">
-                    <i class="bx bxs-moon"></i>
                 </button>
                 <button class="btn" id="btn-help">
                     <i class="bx bx-question-mark"></i>
                 </button>
             </div>
             <!-- END OF SETTING SECTION -->
+
             <!-- BUTTON CONTROLS -->
             <div class="control-section">
                 <div class="arrow-control">
                     <div></div>
                     <button class="btn" id="btn-rotate">
-                        <i class="bx bx-rotate-left"></i>
+                        <i class="bx bx-rotate-right"></i>
                     </button>
                     <div></div>
                     <button class="btn" id="btn-left">
@@ -91,6 +95,7 @@
                 </div>
             </div>
             <!-- END OF BUTTON CONTROLS-->
+
         </div>
         <!-- END OF GAME -->
     </div>
