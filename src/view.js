@@ -15,6 +15,8 @@ export class GameView {
 
         this.menuState = document.querySelector('body');
         this.menuStatus = document.querySelector('.menu-status');
+
+        this.helpSection = document.querySelector('.help-section');
     }
 
     /* Info updates */
@@ -76,7 +78,7 @@ export class GameView {
     
                     // Perform action (draw or clear)
                     if (action === 'DRAW') {
-                        this.board[ghostIndex].style.background = "grey";
+                        this.board[ghostIndex].style.background = "#5b5b5b";
                         this.board[index].style.background = tetromino.color;
                     } else if (action === 'CLEAR') {
                         this.board[ghostIndex].style.background = "transparent";
@@ -126,5 +128,9 @@ export class GameView {
         [...this.board].forEach((block) => {
             block.style.background = 'transparent';
         });
+    }
+
+    toggleHelp() {
+        this.helpSection.classList.toggle('active');
     }
 }

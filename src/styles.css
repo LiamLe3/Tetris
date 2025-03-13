@@ -1,9 +1,10 @@
 :root {
-    --bg-color: #38393b;
-    --game-shadow: -10px 10px 20px #202022, 10px -10px 20px #4b4d4f;
+    --bg-color: #393939;
+    --game-shadow: -10px 10px 20px #222222, 10px -10px 20px #565656;
     --board-shadow-inset: inset -5px 5px 8px #202022, inset 5px -5px 8px #4b4d4f;
     --button-shadow: -5px 5px 10px #2e2e30, 5px -5px 10px #3e4042;
     --button-shadow-inset: inset -5px 5px 10px #2e2e30, inset 5px -5px 10px #3e4042;
+    --key-shadow: -5px 5px 10px #2e2e30, 5px -5px 10px #2e2e30;
 
     --game-radius: 20px;
     --board-radius: 10px;
@@ -54,6 +55,7 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    z-index: 2;
 }
 
 .info-section {
@@ -141,10 +143,6 @@ html {
     box-shadow: var(--button-shadow-inset);
 }
 
-.control-section {
-    display: none;
-}
-
 .arrow-control {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -157,10 +155,6 @@ html {
 
 .other-control button {
     margin: 0 15px;
-}
-
-.control-section {
-    display: none;
 }
 
 .menu-section { 
@@ -247,6 +241,39 @@ html {
     display: none;
 }
 
+.help-section {
+    position: absolute;
+    background: var(--bg-color);
+    color: var(--color-primary);
+    box-shadow: var(--game-shadow);
+    border-radius: var(--game-radius);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    padding: 15px;
+    z-index: 1;
+    transform: translate(0, 0);
+    transition: transform 0.5s ease-in-out;
+}
+
+.help-section.active {
+    transform: translate(425px, 0);
+}
+.help-section td {
+    padding: 15px;
+}
+
+.help-key {
+    color: var(--color-secondary);
+    width: calc(2*var(--button-size));
+    height: var(--button-size);
+    box-shadow: var(--key-shadow);
+    border-radius: var(--button-border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media only screen and (max-width: 425px) {
     :root {
         --block-size: 20px;
@@ -257,7 +284,7 @@ html {
         border-radius: unset;
     }
 
-    .setting-section {
+    .play .setting-section {
         position: absolute;
         flex-direction: column;
         transform: translateY(-50%);
@@ -272,9 +299,15 @@ html {
         margin-bottom: 10px;
     }
 
-    .control-section {
+    
+    .play .control-section {
         display: flex;
         justify-content: space-around;
         align-items: center;
+    }
+
+    .help-section,
+    #btn-help {
+        display: none;
     }
 }

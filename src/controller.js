@@ -24,6 +24,9 @@ export class GameController {
                 return;
         
             switch(event.key) {
+                case KEY.ANTI:
+                    this.rotateAction(ROTATION.ANTI);
+                    break;
                 case KEY.CLOCK:
                     this.rotateAction(ROTATION.CLOCKWISE);
                     break;
@@ -91,6 +94,9 @@ export class GameController {
                         this.gameState = GAME_STATE.PLAY;
                         this.view.newGame();
                         this.startGame();
+                        break;
+                    case BUTTON.HELP:
+                        this.view.toggleHelp();
                         break;
                 }
             })

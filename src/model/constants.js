@@ -23,7 +23,8 @@ export const BUTTON = {
     STORE: 'btn-store',
     PLAY: 'btn-play',
     PAUSE: 'btn-pause',
-    NEW_GAME: 'btn-new-game'
+    NEW_GAME: 'btn-new-game',
+    HELP: 'btn-help'
 }
 
 export const GAME_STATE = {
@@ -101,13 +102,13 @@ export const OTHER_KICK_TABLE = [
 export const TRANSPARENT = 'transparent';
 
 export const COLORS = [
-    '#f9d308',
-    '#32c7ee',
-    '#a84b99',
-    '#43bb48',
-    '#f32028',
-    '#ed7923',
-    '#5865ac'
+    '#ffe600',
+    '#04d9ff',
+    '#cd07ff',
+    '#0af61a',
+    '#f70909',
+    '#ff8809',
+    '#094fff'
 ]
 
 // Block types
