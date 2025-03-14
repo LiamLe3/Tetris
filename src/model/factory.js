@@ -11,6 +11,8 @@ export function getNextTetromino(bag) {
 // Refills and randomises order in bag
 function generateNewBag(bag) {
     bag.push(...BLOCK_ID);
+    console.log(BLOCK_ID);
+    console.log(bag);
 
     // Randomly swaps the order in which blocks are pulled out
     for (let i = bag.length - 1; i > 0; i--) {
