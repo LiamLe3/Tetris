@@ -106,7 +106,7 @@ export class GameController {
     /* Game Start */
     startGame() {
         this.model.resetModel();
-        this.view.resetView(this.model.getScore(), this.model.getLevel(), this.model.getHoldId(), this.model.getNextId());
+        this.view.resetView(this.model.getScore(), this.model.getLevel(), this.model.getNextId());
         this.drawGhostAndTetromino();
         this.updateDropInterval();
     }

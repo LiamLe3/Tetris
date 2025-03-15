@@ -5,8 +5,8 @@ export class GameView {
         this.board = document.getElementsByClassName('block');
         this.gameLevel = document.querySelector('#game-level');
         this.gameScore = document.querySelector('#game-score');
-        this.holdblock = document.querySelector('#hold-block');
-        this.nextBlock = document.querySelector('#next-block');
+        this.holdImg = document.querySelector('#hold-block');
+        this.nextImg = document.querySelector('#next-block');
         
         this.endLevel = document.querySelector('#result-level');
         this.endScore = document.querySelector('#result-score');
@@ -34,20 +34,22 @@ export class GameView {
     }
 
     // Updates the current hold block
-    displayHoldBlock(holdBlockId) {
-
+    displayHoldBlock(holdBlockId = 'empty') {
+        const imagePath = require(`./assets/${holdBlockId}.png`);
+        this.holdImg.src = imagePath;
     }
 
     // Updates the next block
     displayNextBlock(nextBlockId) {
-
+        const imagePath = require(`./assets/${nextBlockId}.png`);
+        this.nextImg.src = imagePath;
     }
 
-    resetView(score, level, holdId, nextId) {
+    resetView(score, level, nextId) {
         this.updateScore(score);
         this.updateLevel(level);
 
-        this.displayHoldBlock(holdId);
+        this.displayHoldBlock();
         this.displayNextBlock(nextId);
     }
 
