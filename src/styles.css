@@ -1,6 +1,6 @@
 :root {
     --bg-color: #393939;
-    --game-shadow: -10px 10px 20px #222222, 10px -10px 20px #565656;
+    --game-shadow: -10px 10px 20px #121212, 10px -10px 20px #2e2e2e;
     --board-shadow-inset: inset -5px 5px 8px #202022, inset 5px -5px 8px #4b4d4f;
     --button-shadow: -5px 5px 10px #2e2e30, 5px -5px 10px #3e4042;
     --button-shadow-inset: inset -5px 5px 10px #2e2e30, inset 5px -5px 10px #3e4042;
@@ -29,7 +29,9 @@ body,
 html {
     font-family: sans-serif;
     height: 100vh;
-    background-color: var(--bg-color);
+    background-image: url("./assets/background.jpg");
+    background-size: 100%;
+    object-fit: fill;
     overflow: hidden;
     user-select: none;
 }
@@ -271,6 +273,11 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#hold-block,
+#next-block {
+    max-width: 80%;
 }
 
 @media only screen and (max-width: 425px) {
