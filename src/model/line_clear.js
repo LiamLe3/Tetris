@@ -1,6 +1,6 @@
 import { WIDTH, EMPTY, TRANSPARENT, COLORS } from "./constants";
 
-// Clears any filled rows and returns the number of cleared rows
+/* Clears any filled rows and returns the number of cleared rows */
 export function clearRows(grid, callback) {
         let count = 0;
         grid.forEach((row, index) => {
@@ -13,12 +13,12 @@ export function clearRows(grid, callback) {
         return count;
     }
 
-// Checks if the row is filled
+/* Checks if the row is filled */
 function isFilledRow(row) {
     return row.every(cell => cell.value !== EMPTY)
 }
 
-// Clears the filled row and uses a callback to draw the cell on the view grid
+/* Clears the filled row and uses a callback to draw the cell on the view grid */
 function clearRow(index, grid, callback) {
     for(let row=index; row >= 0; row--){
         for(let col=0; col<WIDTH; col++){

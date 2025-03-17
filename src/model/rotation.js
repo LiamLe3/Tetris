@@ -6,7 +6,7 @@ import {
 
 import { isValidPosition } from './helper.js';
 
-// Get the resuts of attempting to rotate the tetromino
+/* Get the resuts of attempting to rotate the tetromino */
 export function getRotationResult(tetromino, rotation, grid) {
     let rotatedBlock = rotateBlock(rotation, tetromino);
     let direction = getDirection(rotation);
@@ -32,7 +32,7 @@ export function getRotationResult(tetromino, rotation, grid) {
     return { ...result, newOrientation: endOrientation }
 }
 
-// Makes the rotated block for testing
+/* Makes the rotated block for testing */
 function rotateBlock(rotation, tetromino) {
     let rotatedBlock = JSON.parse(JSON.stringify(tetromino.block));
     transpose(rotatedBlock);
@@ -40,7 +40,7 @@ function rotateBlock(rotation, tetromino) {
     return rotatedBlock;
 }
 
-// Transposes the block matrix
+/* Transposes the block matrix */
 function transpose(block) {
     // Swap the elements across the diagonal
     for (let i = 0; i < block.length; i++)
@@ -48,7 +48,7 @@ function transpose(block) {
             [block[i][j], block[j][i]] = [block[j][i], block[i][j]];
 }
 
-// Reverses the block matrix by row or column
+/* Reverses the block matrix by row or column */
 function reverse(rotation, block) {
     if(rotation === ROTATION.CLOCKWISE)
         block.forEach(row => row.reverse());
@@ -56,12 +56,12 @@ function reverse(rotation, block) {
         block.reverse();
 }
 
-// Gets the direction of the rotation
+/* Gets the direction of the rotation */
 function getDirection(rotation) {
     return rotation === ROTATION.CLOCKWISE ? ROTATE.RIGHT : ROTATE.LEFT;
 }
 
-// Returns the test number for I blocks
+/* Returns the test number for I blocks */
 function getIBlockTests(current, end){
     if(current === ORI.START && end === ORI.RIGHT)
         return 0;
@@ -81,7 +81,7 @@ function getIBlockTests(current, end){
         return 7;
 }
 
-// Returns the test number for all other blocks
+/* Returns the test number for all other blocks */
 function getOtherBlockTests(current, end) {
     if(current === ORI.LEFT)
         return 0;
@@ -93,7 +93,8 @@ function getOtherBlockTests(current, end) {
         return 3;
 }
 
-// Runs the kick test for the rotation type to see if the tetromino can rotate into a new position
+/* Runs the kick test for the rotation type to see if the 
+tetromino can rotate into a new position */
 function runKickTests(testId, tetromino, block, grid, kickTable){
     let result = { rotatable: false };
 

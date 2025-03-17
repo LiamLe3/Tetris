@@ -56,7 +56,7 @@ export class GameModel {
 
     /* Level && Speed */
     getSpeed() {
-        return (0.8-((this.level-1)*0.007))**(this.level-1) * 1000;
+        return (0.93-((this.level-1)*0.007))**(this.level-1) * 1000;
     }
 
     getLevel() {
@@ -144,6 +144,7 @@ export class GameModel {
         return this.swapped;
     }
 
+    // Create a new tetromino if hold is empty, otherwise swap
     swapTetromino() {
         let { tetromino, holdId } = this;
         if(this.holdId === null) {
@@ -173,6 +174,7 @@ export class GameModel {
         this.lastMoveTime = Date.now();
     }
 
+    // Checks if player has moved/rotated within last 0.5s
     hasMovedRecently() {
         const currentTime = Date.now();
         return currentTime - this.lastMoveTime <= LOCK_DELAY;

@@ -1,6 +1,6 @@
 import { BLOCKS, COLORS, BLOCK_ID, SQUARE, START_X, START_Y } from "./constants";
 
-// Returns a block in the bag, refreshes bag if it is empty
+/* Returns a block in the bag, refreshes bag if it is empty */
 export function getNextTetromino(bag) {
     if(bag.length === 0){
         bag = generateNewBag(bag);
@@ -8,7 +8,7 @@ export function getNextTetromino(bag) {
     return bag.pop();
 }
 
-// Refills and randomises order in bag
+/* Refills and randomises order in bag */
 function generateNewBag(bag) {
     bag.push(...BLOCK_ID);
 
@@ -20,7 +20,7 @@ function generateNewBag(bag) {
     return bag
 }
 
-// Factory function for block information
+/* Factory function for block information */
 export function createTetromino(nextBlockId) {
     return {
         block: JSON.parse(JSON.stringify(BLOCKS[nextBlockId])),

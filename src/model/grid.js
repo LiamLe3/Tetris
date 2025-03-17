@@ -1,6 +1,6 @@
 import { HEIGHT, WIDTH } from "./constants";
 
-// Creates or resets the model grid
+/* Creates or resets the model grid */
 export function createGrid(){
     let grid = new Array(HEIGHT);
     let index = 0;
@@ -19,7 +19,7 @@ export function createGrid(){
     return grid;
 }
 
-// Updates the grid with the cells the block locked into
+/* Updates the grid with the cells the block locked into */
 export function updateGrid(tetromino, grid) {
     tetromino.block.forEach((row, i) => {
         row.forEach((value, j) => {

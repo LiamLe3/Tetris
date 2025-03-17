@@ -2,30 +2,29 @@ import { MAX_LEVEL, EMPTY } from "./model/constants"
 
 export class GameView {
     constructor() {
+        this.createBoard(20, 10, ".board-section");
+
         this.board = document.getElementsByClassName('block');
         this.gameLevel = document.querySelector('#game-level');
         this.gameScore = document.querySelector('#game-score');
         this.holdImg = document.querySelector('#hold-block');
         this.nextImg = document.querySelector('#next-block');
-        
-        this.endLevel = document.querySelector('#result-level');
-        this.endScore = document.querySelector('#result-score');
 
         this.playButton = document.querySelector('#btn-play');
-
         this.menuState = document.querySelector('body');
         this.menuStatus = document.querySelector('.menu-status');
 
         this.helpSection = document.querySelector('.help-section');
+
+        this.endLevel = document.querySelector('#result-level');
+        this.endScore = document.querySelector('#result-score');
     }
 
-    /* Info updates */
-    // Updates the score in view
+    /* View Infomation Update */
     updateScore(score) {
         this.gameScore.innerHTML = score;
     }
 
-    // Updates the level in view
     updateLevel(level) {
         if(level === MAX_LEVEL)
             this.gameLevel.innerHTML = 'LV. MAX'
@@ -33,30 +32,25 @@ export class GameView {
             this.gameLevel.innerHTML = 'LV. ' + level;
     }
 
-    // Updates the current hold block
-    displayHoldBlock(holdBlockId = 'empty') {
+    updateHoldBlock(holdBlockId = 'empty') {
         const imagePath = require(`./assets/${holdBlockId}.png`);
         this.holdImg.src = imagePath;
     }
 
-    // Updates the next block
-    displayNextBlock(nextBlockId) {
+    updateNextBlock(nextBlockId) {
         const imagePath = require(`./assets/${nextBlockId}.png`);
         this.nextImg.src = imagePath;
-    }
-
-    resetView(score, level, nextId) {
-        this.updateScore(score);
-        this.updateLevel(level);
-
-        this.displayHoldBlock();
-        this.displayNextBlock(nextId);
     }
 
     updateView(score, level, nextId) {
         this.updateScore(score);
         this.updateLevel(level);
-        this.displayNextBlock(nextId);
+        this.updateNextBlock(nextId);
+    }
+
+    resetView(nextId) {
+        this.updateView(0, 1, nextId);
+        this.updateHoldBlock();
     }
 
     /* Drawing */
@@ -91,13 +85,16 @@ export class GameView {
         });
     }
 
+    // Makes every cell in view empty
+    clearBoard() {
+        [...this.board].forEach((block) => {
+            block.style.background = 'transparent';
+        });
+    }
+
     /* Menu State */
-    displayGameOver(score, level) {
-        this.menuState.classList.add('game-over');
-        this.menuState.classList.remove('play');
-        this.endLevel.innerHTML = level;
-        this.endScore.innerHTML = score;
-        this.menuStatus.innerHTML = 'GAME OVER'
+    displayGame() {
+        this.menuState.classList.add('play');
     }
 
     displayPause() {
@@ -107,12 +104,12 @@ export class GameView {
         this.menuStatus.innerHTML = 'PAUSED'
     }
 
-    displayGame() {
-        this.menuState.classList.add('play');
-    }
-
-    setGamePlay() {
-        this.menuState.classList.add('play');
+    displayGameOver(score, level) {
+        this.menuState.classList.add('game-over');
+        this.menuState.classList.remove('play');
+        this.endLevel.innerHTML = level;
+        this.endScore.innerHTML = score;
+        this.menuStatus.innerHTML = 'GAME OVER'
     }
 
     resumeGame(){
@@ -124,12 +121,6 @@ export class GameView {
         this.menuState.classList.remove('pause');
         this.menuState.classList.remove('game-over');
         this.clearBoard();
-    }
-
-    clearBoard() {
-        [...this.board].forEach((block) => {
-            block.style.background = 'transparent';
-        });
     }
 
     toggleHelp() {

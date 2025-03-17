@@ -20,8 +20,8 @@ export class GameController {
         document.addEventListener('keydown', (event) => {
             event.preventDefault();
             
-            if(this.gameState !== GAME_STATE.PLAY)
-                return;
+            // Disable key inputs when user is not playing
+            if(this.gameState !== GAME_STATE.PLAY) return;
         
             switch(event.key) {
                 case KEY.ANTI:
@@ -77,13 +77,15 @@ export class GameController {
                         this.swapAction();
                         break;
                     case BUTTON.PLAY:
-                        this.view.setGamePlay();
+                        this.view.displayGame();
+                        // If returning from Pause State
                         if(this.gameState === GAME_STATE.PAUSE){
                             this.gameState = GAME_STATE.PLAY;
                             this.view.resumeGame();
                             return;
                         }
-                        this.gameState = GAME_STATE.PLAY;
+
+                        // Otherwise coming from start menu
                         this.startGame()
                         break;
                     case BUTTON.PAUSE:
@@ -106,9 +108,10 @@ export class GameController {
     /* Game Start */
     startGame() {
         this.model.resetModel();
-        this.view.resetView(this.model.getScore(), this.model.getLevel(), this.model.getNextId());
+        this.view.resetView(this.model.getNextId());
         this.drawGhostAndTetromino();
         this.updateDropInterval();
+        this.gameState = GAME_STATE.PLAY;
     }
 
     /* Interval */
@@ -131,6 +134,7 @@ export class GameController {
     }
 
     /* Actions */
+    // Dynamic function to handle different action types. Used to reduce repetitive code
     performAction(action) {
         this.view.drawTetromino(this.model.getTetromino(), this.model.getGrid(), this.model.getGhostY(), CLEAR);
         action();
@@ -170,17 +174,22 @@ export class GameController {
     /* Gameplay Loop */
     gameLoop() {
         if(this.gameState === GAME_STATE.PLAY){
+            // Fall if able to
             if(this.model.tryMove(MOVEMENT.DOWN)){
                 this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
-            } else if(this.model.hasMovedRecently() && this.model.getActionCount() <= MAX_ACTION_COUNT) {
+            } 
+            //If touching a floor or another block underneath, start grace loop
+            else if(this.model.hasMovedRecently() && this.model.getActionCount() <= MAX_ACTION_COUNT) 
+            {
                 this.startGracePeriod();
-            } else {
+            } else { // Lock tetromino
                 this.lockTetromino();
                 this.checkGameOver();
             }
         }
     }
     
+    // Starts a grace loop where the game checks if the player has made an action
     startGracePeriod() {
         this.stopDropInterval();
         if (!this.dropInterval) {
@@ -188,11 +197,16 @@ export class GameController {
         }
     }
 
+    // Check whether to lock tetromino or resume falling
     gracePeriod() {
+        // Return to dropping if it is falling
         if(this.model.tryMove(MOVEMENT.DOWN)) {
             this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
             this.resetDropInterval();
-        } else if(!this.model.hasMovedRecently() || this.model.getActionCount() > MAX_ACTION_COUNT) {
+        } 
+        // Resets when an action is taken until action count is exceeded
+        else if(!this.model.hasMovedRecently() || this.model.getActionCount() > MAX_ACTION_COUNT) 
+        {
             this.lockTetromino();
             this.checkGameOver();
         }
@@ -200,22 +214,27 @@ export class GameController {
 
     /* Game Over */
     checkGameOver() {
+        // Spawn block in starting position
         if(this.model.isValidPosition()) {
             this.drawGhostAndTetromino();
-        } else {
-
+        } 
+        // Starting position is not valid so attempt to...
+        else 
+        {
+            // Move up if there is space
             if (this.model.tryMove(MOVEMENT.UP)){
                 this.model.moveTetromino(MOVEMENT.UP);
                 this.drawGhostAndTetromino();
-            } else {
+            } 
+            // No space is available -> End game
+            else 
+            {
                 this.gameState = GAME_STATE.END;
                 this.stopDropInterval();
                 this.view.displayGameOver(this.model.getScore(), this.model.getLevel());
             }
         }
     }
-
-
 
     /* Other */
     lockTetromino() {
