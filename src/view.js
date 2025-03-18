@@ -2,7 +2,7 @@ import { MAX_LEVEL, EMPTY } from "./model/constants"
 
 export class GameView {
     constructor() {
-        this.createBoard(20, 10, ".board-section");
+        this.createBoard();
 
         this.board = document.getElementsByClassName('block');
         this.gameLevel = document.querySelector('#game-level');
@@ -20,6 +20,15 @@ export class GameView {
         this.endScore = document.querySelector('#result-score');
     }
 
+    /* Webpage Open */
+    createBoard(){
+        let board = document.querySelector(".board-section");
+
+        for(let i = 0; i < 200; i++) {
+            let block = `<div class="block"></div>`
+            board.innerHTML += block;
+        }
+    }
     /* View Infomation Update */
     updateScore(score) {
         this.gameScore.innerHTML = score;

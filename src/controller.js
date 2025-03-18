@@ -167,7 +167,7 @@ export class GameController {
     swapAction() {
         if(this.model.isSwapped()) return;
         this.performAction(() => this.model.swapTetromino());
-        this.view.displayHoldBlock(this.model.getHoldId());
+        this.view.updateHoldBlock(this.model.getHoldId());
         this.checkGameOver();
     }
 
@@ -178,13 +178,11 @@ export class GameController {
             if(this.model.tryMove(MOVEMENT.DOWN)){
                 this.performAction(() => this.model.moveTetromino(MOVEMENT.DOWN));
             } 
-            //If touching a floor or another block underneath, start grace loop
-            else if(this.model.hasMovedRecently() && this.model.getActionCount() <= MAX_ACTION_COUNT) 
+            // Touching Floor, start grace loop
+            else
             {
+                this.model.updateLastMoveTime()
                 this.startGracePeriod();
-            } else { // Lock tetromino
-                this.lockTetromino();
-                this.checkGameOver();
             }
         }
     }

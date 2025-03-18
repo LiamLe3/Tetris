@@ -14,6 +14,11 @@ export function getRotationResult(tetromino, rotation, grid) {
     let { blockId, orientation } = tetromino;
     let endOrientation = (orientation + direction) % ORIENTATIONS;
 
+    // Changes to positive oriention if endOrientation is negative
+    if(endOrientation < 0) {
+        endOrientation += ORIENTATIONS;
+    }
+    
     // Square block rotations result in the same block
     if(blockId === SQUARE)
         return { rotatable: false }
