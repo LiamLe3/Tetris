@@ -1,3 +1,4 @@
+/* Parent Elements */
 :root {
     --bg-color: #393939;
     --game-shadow: -10px 10px 20px #121212, 10px -10px 20px #2e2e2e;
@@ -29,8 +30,6 @@ body,
 html {
     font-family: sans-serif;
     height: 100vh;
-    background-image: url("./assets/background.jpg");
-    background-size: 100%;
     object-fit: fill;
     overflow: hidden;
     user-select: none;
@@ -38,6 +37,8 @@ html {
 
 .container {
     position: relative;
+    background-image: url("./assets/background.jpg");
+    background-size: 100%;
     height: 100%;
     display: flex;
     align-items: center;
@@ -60,7 +61,8 @@ html {
     z-index: 2;
 }
 
-.info-section {
+/* Infomation Section */
+.play .info-section {
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -78,6 +80,12 @@ html {
     justify-content: center;
 }
 
+#hold-block,
+#next-block {
+    max-width: 80%;
+    height: auto;
+}
+
 .info-item {
     display: flex;
     flex-direction: column;
@@ -91,7 +99,8 @@ html {
     font-size: 20px;
 }
 
-.board-section {
+/* Board Section */
+.play .board-section {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     margin: auto;
@@ -106,6 +115,7 @@ html {
     border: 0.1px solid var(--bg-color);
 }
 
+/* Setting Section */
 .setting-section {
     margin-top: auto;
     display: flex;
@@ -119,46 +129,7 @@ html {
     color: var(--color-secondary);
 }
 
-.btn {
-    font-size: 30px;
-    font-weight: 700;
-    color: var(--color-primary);
-    width: var(--button-size);
-    height: var(--button-size);
-    box-shadow: var(--button-shadow);
-    border-radius: var(--button-border-radius);
-    border: none;
-    outline: none;
-    background-color: var(--bg-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#btn-pause {
-    font-size: 45px;
-    padding-top: 3px;
-}
-
-.btn:active {
-    box-shadow: var(--button-shadow-inset);
-}
-
-.arrow-control {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-}
-
-.other-control {
-    display: flex;
-    justify-content: space-between;
-}
-
-.other-control button {
-    margin: 0 15px;
-}
-
+/* Menu Section */
 .menu-section { 
     margin: auto 0;
     position: relative;
@@ -194,9 +165,87 @@ html {
     font-size: 30px;
 }
 
+/* Help Section */
+.help-section {
+    position: absolute;
+    background: var(--bg-color);
+    color: var(--color-primary);
+    box-shadow: var(--game-shadow);
+    border-radius: var(--game-radius);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    padding: 15px;
+    z-index: 1;
+    transform: translate(0, 0);
+    transition: transform 0.5s ease-in-out;
+}
+
+.help-section.active {
+    transform: translate(425px, 0);
+}
+
+.help-section td {
+    padding: 15px;
+}
+
+.help-key {
+    color: var(--color-secondary);
+    width: calc(2*var(--button-size));
+    height: var(--button-size);
+    box-shadow: var(--key-shadow);
+    border-radius: var(--button-border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Buttons */
+.btn {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--color-primary);
+    width: var(--button-size);
+    height: var(--button-size);
+    box-shadow: var(--button-shadow);
+    border-radius: var(--button-border-radius);
+    border: none;
+    outline: none;
+    background-color: var(--bg-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:active {
+    box-shadow: var(--button-shadow-inset);
+}
+
+.play #btn-pause {
+    display: block;
+    font-size: 45px;
+    padding-top: 3px;
+}
+
 .btn-wide {
     width: 200px;
     margin: 30px auto;
+}
+
+/* Control Buttons */
+.arrow-control {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.other-control {
+    display: flex;
+    justify-content: space-between;
+}
+
+.other-control button {
+    margin: 0 15px;
 }
 
 /* State */
@@ -208,18 +257,6 @@ html {
 #btn-new-game,
 #btn-pause {
     display: none;
-}
-
-.play .board-section {
-    display: grid;
-}
-
-.play .info-section {
-    display: flex;
-}
-
-.play #btn-pause {
-    display: block;
 }
 
 .play .menu-section {
@@ -242,47 +279,15 @@ html {
     display: none;
 }
 
-.help-section {
-    position: absolute;
-    background: var(--bg-color);
-    color: var(--color-primary);
-    box-shadow: var(--game-shadow);
-    border-radius: var(--game-radius);
-    font-size: 15px;
-    font-weight: 600;
-    text-align: center;
-    padding: 15px;
-    z-index: 1;
-    transform: translate(0, 0);
-    transition: transform 0.5s ease-in-out;
-}
-
-.help-section.active {
-    transform: translate(425px, 0);
-}
-.help-section td {
-    padding: 15px;
-}
-
-.help-key {
-    color: var(--color-secondary);
-    width: calc(2*var(--button-size));
-    height: var(--button-size);
-    box-shadow: var(--key-shadow);
-    border-radius: var(--button-border-radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#hold-block,
-#next-block {
-    max-width: 80%;
-}
-
+/* Mobile */
 @media only screen and (max-width: 425px) {
     :root {
         --block-size: 20px;
+    }
+
+    .container {
+        background-color: var(--bg-color);
+        background-image: unset;
     }
 
     .game-wrapper {
@@ -304,7 +309,7 @@ html {
     .setting-section button {
         margin-bottom: 10px;
     }
-    
+
     .play .control-section {
         display: flex;
         justify-content: space-around;
