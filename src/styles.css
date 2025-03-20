@@ -18,6 +18,9 @@
     --button-border-radius: 25px;
     --color-primary: #00ffee;
     --color-secondary: #ffa0c1;
+
+    --mobile-item-size: 65px;
+    --mobile-button-size: 60px;
 }
 
 * {
@@ -244,7 +247,9 @@ button {
 }
 
 .other-control {
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
 
@@ -286,7 +291,7 @@ button {
 /* Mobile */
 @media only screen and (max-width: 432px) {
     :root {
-        --block-size: 18px;
+        --block-size: 16px;
     }
 
     .container {
@@ -316,13 +321,28 @@ button {
 
     .play .control-section {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
-        margin: 0 20px 30px;
+        margin: 0 20px 15px;
     }
 
     .help-section,
     #btn-help {
         display: none;
+    }
+
+    .hold-item,
+    .next-item {
+        width: var(--mobile-item-size);
+        height: var(--mobile-item-size);
+    }
+
+    .btn {
+        width: var(--mobile-button-size);
+        height: var(--mobile-button-size);
+    }
+
+    .btn-wide {
+        width: 200px;
     }
 }
