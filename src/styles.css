@@ -57,7 +57,6 @@ html {
     border-radius: var(--game-radius);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     z-index: 2;
 }
 
@@ -103,7 +102,7 @@ html {
 .play .board-section {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    margin: auto;
+    margin: 0 auto;
     box-shadow: var(--board-shadow-inset);
     border-radius: var(--board-radius);
     padding: 10px;
@@ -222,6 +221,10 @@ html {
     box-shadow: var(--button-shadow-inset);
 }
 
+.btn:focus {
+    outline: none;
+}
+
 .play #btn-pause {
     display: block;
     font-size: 45px;
@@ -282,7 +285,7 @@ html {
 /* Mobile */
 @media only screen and (max-width: 425px) {
     :root {
-        --block-size: 20px;
+        --block-size: 16px;
     }
 
     .container {
@@ -312,8 +315,9 @@ html {
 
     .play .control-section {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
+        padding: 20px 20px 0;
     }
 
     .help-section,
