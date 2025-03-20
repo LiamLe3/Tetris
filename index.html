@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<script defer src="main.js"></script></head>
+<body>
+    <div class="container">
+        <!-- GAME -->
+        <div class="game-wrapper">
+
+            <!-- MENU SECTION -->
+            <div class="menu-section">
+                <div class="menu-title">
+                    <span>T</span>
+                    <span>E</span>
+                    <span>T</span>
+                    <span>R</span>
+                    <span>I</span>
+                    <span>S</span>
+                </div>
+
+                <h1 class="menu-status">GAME OVER</h1>
+                <div class="result">
+                    <h2>Level</h2>
+                    <p id="result-level">20</p>
+                
+                    <h2>Score</h2>
+                    <p id="result-score">200</p>
+                </div>
+
+                <button class="btn btn-wide" id="btn-play">Play</button>
+                <button class="btn btn-wide" id="btn-new-game">New Game</button>
+            </div>
+            <!-- END OF MENU SECTION -->
+
+            <!-- INFO/BOARD SECTION -->
+            <div class="info-section">
+                <div class="hold-item">
+                    <img src="" id="hold-block">
+                </div>
+                <div class="info-item">
+                    <span id="game-score">12345</span>
+                    <span id="game-level">LV. 0</span>
+                </div>
+                <div class="next-item">
+                    <img src="" id="next-block">
+                </div>
+            </div>
+            
+            <div class="board-section"></div>
+            <!-- END OF INFO/BOARD SECTION -->
+
+            <!-- SETTING SECTION -->
+            <div class="setting-section">
+                <button class="btn" id="btn-pause">
+                    <i class="bx bx-pause"></i>
+                </button>
+                <button class="btn" id="btn-help">
+                    <i class="bx bx-question-mark"></i>
+                </button>
+            </div>
+            <!-- END OF SETTING SECTION -->
+
+            <!-- BUTTON CONTROLS -->
+            <div class="control-section">
+                <div class="arrow-control">
+                    <div></div>
+                    <button class="btn" id="btn-rotate">
+                        <i class="bx bx-rotate-right"></i>
+                    </button>
+                    <div></div>
+                    <button class="btn" id="btn-left">
+                        <i class="bx bxs-chevron-left"></i>
+                    </button>
+                    <div></div>
+                    <button class="btn" id="btn-right">
+                        <i class="bx bxs-chevron-right"></i>
+                    </button>
+                    <div></div>
+                    <button class="btn" id="btn-down">
+                        <i class="bx bxs-chevron-down"></i>
+                    </button>
+                    <div></div>
+                </div>
+                <div class="other-control">
+                    <button class="btn" id="btn-drop">
+                        <i class="bx bxs-chevrons-down"></i>
+                    </button>
+                    <button class="btn" id="btn-store">
+                        <i class='bx bxs-box'></i>
+                    </button>
+                </div>
+            </div>
+            <!-- END OF BUTTON CONTROLS-->
+
+        </div>
+        <!-- END OF GAME -->
+
+        <div class="help-section">
+            <h3>KEYBOARD CONTROLS</h3>
+            <table>
+                <tr>
+                    <td>
+                        <span class="help-key">
+                            Z
+                        </span>
+                    </td>
+                    <td>
+                        Rotate Left
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="help-key">
+                            <i class="bx bxs-chevron-up"></i>
+                        </span>
+                    </td>
+                    <td>
+                        Rotate Right
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="help-key">
+                            <i class="bx bxs-chevron-left"></i>
+                        </span>
+                    </td>
+                    <td>
+                        Move Left
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="help-key">
+                            <i class="bx bxs-chevron-right"></i>
+                        </span>
+                    </td>
+                    <td>
+                        Move Right
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="help-key">
+                            <i class="bx bxs-chevron-down"></i>
+                        </span>
+                    </td>
+                    <td>
+                        Move Down
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="help-key">
+                            SPACE
+                        </span>
+                    </td>
+                    <td>
+                        Hard Drop
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="help-key">
+                            C
+                        </span>
+                    </td>
+                    <td>
+                        Hold Block
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+</body>
+</html>
