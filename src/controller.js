@@ -1,4 +1,4 @@
-import { KEY, BUTTON, GAME_STATE, DRAW, CLEAR, MOVEMENT, ROTATION, LOCK_DELAY, MAX_ACTION_COUNT } from "./model/constants";
+import { KEY, BUTTON, GAME_STATE, DRAW, CLEAR, MOVEMENT, ROTATION, LOCK_DELAY, MAX_ACTION_COUNT } from "./model/constants.js";
 
 export class GameController {
     constructor(model, view) {

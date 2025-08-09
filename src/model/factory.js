@@ -1,4 +1,4 @@
-import { BLOCKS, COLORS, BLOCK_ID, SQUARE, START_X, START_Y } from "./constants";
+import { BLOCKS, COLORS, BLOCK_ID, SQUARE, START_X, START_Y } from "./constants.js";
 
 /* Returns a block in the bag, refreshes bag if it is empty */
 export function getNextTetromino(bag) {

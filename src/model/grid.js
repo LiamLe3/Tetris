@@ -1,4 +1,4 @@
-import { HEIGHT, WIDTH } from "./constants";
+import { HEIGHT, WIDTH } from "./constants.js";
 
 /* Creates or resets the model grid */
 export function createGrid(){

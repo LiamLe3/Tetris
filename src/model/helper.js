@@ -1,4 +1,4 @@
-import { HEIGHT, WIDTH, EMPTY } from "./constants";
+import { HEIGHT, WIDTH, EMPTY } from "./constants.js";
 
 /* Checks if the given tetromino position is valid */
 export function isValidPosition(newX, newY, block, grid) {

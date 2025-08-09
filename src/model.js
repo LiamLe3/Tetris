@@ -1,4 +1,4 @@
-import { SCORES, LINES_PER_LEVEL, LOCK_DELAY, MAX_LEVEL, BOTTOM } from "./model/constants"
+import { SCORES, LINES_PER_LEVEL, LOCK_DELAY, MAX_LEVEL } from "./model/constants.js"
 
 import { createGrid, updateGrid } from './model/grid.js';
 import { clearRows } from './model/line_clear.js';

@@ -1,4 +1,4 @@
-import { WIDTH, EMPTY, TRANSPARENT, COLORS } from "./constants";
+import { WIDTH, EMPTY, TRANSPARENT, COLORS } from "./constants.js";
 
 /* Clears any filled rows and returns the number of cleared rows */
 export function clearRows(grid, callback) {

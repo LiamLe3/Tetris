@@ -1,4 +1,4 @@
-import { MAX_LEVEL, EMPTY } from "./model/constants"
+import { MAX_LEVEL, EMPTY } from "./model/constants.js"
 
 export class GameView {
     constructor() {
